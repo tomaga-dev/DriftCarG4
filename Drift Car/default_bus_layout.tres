@@ -1,0 +1,42 @@
+[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://bqa1ktdoiq6xq"]
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_jgcqe"]
+resource_name = "Amplify"
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_f058u"]
+resource_name = "Amplify"
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_xga66"]
+resource_name = "Amplify"
+
+[resource]
+bus/1/name = &"Amplifier"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Master"
+bus/2/name = &"Low"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = 0.0
+bus/2/send = &"Amplifier"
+bus/2/effect/0/effect = SubResource( "AudioEffectAmplify_jgcqe" )
+bus/2/effect/0/enabled = true
+bus/3/name = &"Mid"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 0.0
+bus/3/send = &"Amplifier"
+bus/3/effect/0/effect = SubResource( "AudioEffectAmplify_f058u" )
+bus/3/effect/0/enabled = true
+bus/4/name = &"High"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Amplifier"
+bus/4/effect/0/effect = SubResource( "AudioEffectAmplify_xga66" )
+bus/4/effect/0/enabled = true

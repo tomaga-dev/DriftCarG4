@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://drl1kk35eoxf5"]
+
+[ext_resource type="Script" path="res://Scenes/VehicleController/WheelController/WheelController.gd" id="1_qk6ln"]
+
+[node name="WheelController" type="Node3D"]
+script = ExtResource( "1_qk6ln" )
+
+[node name="RayCast" type="RayCast3D" parent="."]

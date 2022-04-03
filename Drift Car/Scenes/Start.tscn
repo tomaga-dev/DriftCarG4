@@ -1,0 +1,126 @@
+[gd_scene load_steps=18 format=3 uid="uid://dta6xmmmfyvka"]
+
+[ext_resource type="Script" path="res://Scenes/Start.gd" id="1_d73gc"]
+[ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
+[ext_resource type="Script" path="res://Scenes/MotorSoundController.gd" id="3_vtcu0"]
+[ext_resource type="Script" path="res://Scenes/Camera.gd" id="3_wjqso"]
+[ext_resource type="PackedScene" uid="uid://8gvodawxeog" path="res://Scenes/Maps/Map-1/Ground.tscn" id="4_ymbyv"]
+[ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
+[ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
+sky_top_color = Color(0, 0.620417, 1, 1)
+sky_horizon_color = Color(0.96, 0.973333, 1, 1)
+sky_curve = 0.0315336
+ground_horizon_color = Color(0.96, 0.973333, 1, 1)
+sun_curve = 0.270375
+
+[sub_resource type="Sky" id="Sky_wbhdn"]
+sky_material = SubResource( "ProceduralSkyMaterial_87l1k" )
+
+[sub_resource type="Environment" id="Environment_e3rv3"]
+background_mode = 2
+sky = SubResource( "Sky_wbhdn" )
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 2
+auto_exposure_enabled = true
+
+[sub_resource type="CameraEffects" id="CameraEffects_2vxr5"]
+dof_blur_far_distance = 120.0
+dof_blur_far_transition = 60.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
+size = Vector3(500, 100, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4xdyb"]
+size = Vector3(500, 100, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q02r8"]
+size = Vector3(10, 100, 500)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_37nhg"]
+custom_solver_bias = 1.0
+size = Vector3(10, 100, 500)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_8e0f4"]
+radius = 0.87
+height = 0.31
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jikxc"]
+size = Vector3(1, 0.3, 1)
+
+[node name="Start" type="Node"]
+script = ExtResource( "1_d73gc" )
+
+[node name="Player" type="Node" parent="."]
+script = ExtResource( "2_g27tf" )
+
+[node name="MotorSoundController" type="Node" parent="."]
+script = ExtResource( "3_vtcu0" )
+f1_node = NodePath("../Monteri/F1")
+f2_node = NodePath("../Monteri/F2")
+f3_node = NodePath("../Monteri/F3")
+
+[node name="Status" parent="." instance=ExtResource( "6_limtv" )]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.183996, 0.973116, -0.138532, 0, 0.140938, 0.990018, 0.982927, 0.18216, -0.0259321, -1.70368, 12.6744, -0.234682)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( "Environment_e3rv3" )
+camera_effects = SubResource( "CameraEffects_2vxr5" )
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.74724, -0.127321, 0.652245, -5.42986, 2.63843, 4.82904)
+fov = 40.0
+script = ExtResource( "3_wjqso" )
+target_node = NodePath("../Monteri/CameraTarget")
+vehicle_controller_node = NodePath("../Monteri")
+
+[node name="Ground" parent="." instance=ExtResource( "4_ymbyv" )]
+
+[node name="GroundLimits" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundLimits"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 255)
+shape = SubResource( "BoxShape3D_y5xuo" )
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="GroundLimits"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -255)
+shape = SubResource( "BoxShape3D_4xdyb" )
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="GroundLimits"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 255, 0, 0)
+shape = SubResource( "BoxShape3D_q02r8" )
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="GroundLimits"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -255, 0, 0)
+shape = SubResource( "BoxShape3D_37nhg" )
+
+[node name="Monteri" parent="." instance=ExtResource( "5_x1q82" )]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+
+[node name="CameraTarget" type="Node3D" parent="Monteri"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+
+[node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -1.5)
+shape = SubResource( "CylinderShape3D_8e0f4" )
+
+[node name="CollisionShapeTop" type="CollisionShape3D" parent="Monteri"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0.56)
+shape = SubResource( "BoxShape3D_jikxc" )
+
+[node name="F1" type="AudioStreamPlayer3D" parent="Monteri"]
+bus = &"Low"
+
+[node name="F2" type="AudioStreamPlayer3D" parent="Monteri"]
+bus = &"Mid"
+
+[node name="F3" type="AudioStreamPlayer3D" parent="Monteri"]
+bus = &"High"
+
+[connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
+[connection signal="update_motor_sound" from="Monteri" to="MotorSoundController" method="_on_monteri_update_motor_sound"]

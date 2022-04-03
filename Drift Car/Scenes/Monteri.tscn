@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4p4hvb8ja73m"]
+
+[ext_resource type="PackedScene" uid="uid://c1wd0g2qau02q" path="res://Scenes/VehicleController/VehicleController.tscn" id="1_vwf80"]
+[ext_resource type="PackedScene" uid="uid://c8ykgdj0gt6wb" path="res://Scenes/CarModels/Monteri-Body/Monteri-Body.tscn" id="2_crk13"]
+[ext_resource type="PackedScene" uid="uid://kbmib55m6g4o" path="res://Scenes/CarModels/Wheels/WheelLeft.tscn" id="3_pxrgm"]
+[ext_resource type="PackedScene" uid="uid://bv7r73vvdboff" path="res://Scenes/CarModels/Wheels/WheelRight.tscn" id="4_tdi7i"]
+
+[node name="Monteri" instance=ExtResource( "1_vwf80" )]
+
+[node name="Monteri-Body" parent="VehicleBody" index="0" instance=ExtResource( "2_crk13" )]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
+
+[node name="Wheel" parent="FL/Wheel" index="0" instance=ExtResource( "3_pxrgm" )]
+
+[node name="Wheel" parent="FR/Wheel" index="0" instance=ExtResource( "4_tdi7i" )]
+
+[node name="Wheel" parent="RL/Wheel" index="0" instance=ExtResource( "3_pxrgm" )]
+
+[node name="Wheel" parent="RR/Wheel" index="0" instance=ExtResource( "4_tdi7i" )]

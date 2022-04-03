@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=3 uid="uid://bhqt5d5hg31xl"]
+
+[ext_resource type="FontData" uid="uid://p28emkvy8p7f" path="res://Scenes/Fonts/noto_sans_ui_regular.ttf" id="1_4jnqs"]
+
+[sub_resource type="Font" id="Font_wvyq2"]
+data/0 = ExtResource( "1_4jnqs" )
+
+[sub_resource type="Font" id="Font_oi00y"]
+data/0 = ExtResource( "1_4jnqs" )
+
+[sub_resource type="Font" id="Font_01wd5"]
+data/0 = ExtResource( "1_4jnqs" )
+
+[node name="Status" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Horizontal" type="ColorRect" parent="."]
+anchor_right = 1.0
+offset_bottom = 29.0
+grow_horizontal = 2
+color = Color(0.121569, 0.054902, 0, 0.615686)
+__meta__ = {
+"_edit_layout_mode": 1,
+"_edit_use_custom_anchors": false
+}
+
+[node name="Vertical" type="ColorRect" parent="."]
+anchor_bottom = 1.0
+offset_top = 29.0
+offset_right = 302.0
+grow_vertical = 2
+color = Color(0.121569, 0.054902, 0, 0.615686)
+__meta__ = {
+"_edit_layout_mode": 1,
+"_edit_use_custom_anchors": false
+}
+
+[node name="Info" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.894118, 0.384314, 0.0470588, 1)
+theme_override_fonts/font = SubResource( "Font_wvyq2" )
+theme_override_font_sizes/font_size = 18
+text = "ESC to quit"
+
+[node name="FPS" type="Label" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -84.0
+offset_right = -13.0
+offset_bottom = 29.0
+grow_horizontal = 0
+theme_override_fonts/font = SubResource( "Font_oi00y" )
+theme_override_font_sizes/font_size = 18
+text = "FPS: 000"
+__meta__ = {
+"_edit_layout_mode": 1,
+"_edit_use_custom_anchors": false
+}
+
+[node name="Debug" type="Label" parent="."]
+offset_top = 29.0
+offset_right = 302.0
+offset_bottom = 58.0
+theme_override_fonts/font = SubResource( "Font_01wd5" )
+theme_override_font_sizes/font_size = 18
+text = "Debug output
+"
+__meta__ = {
+"_edit_layout_mode": 0,
+"_edit_use_custom_anchors": false
+}

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv7r73vvdboff"]
+
+[ext_resource type="PackedScene" uid="uid://b7sv7v34jgqwm" path="res://Scenes/CarModels/Wheels/Wheel.glb" id="1_i1535"]
+
+[node name="Wheel" instance=ExtResource( "1_i1535" )]
+transform = Transform3D(0, 1, -8.74228e-08, 1, 0, 0, 0, -8.74228e-08, -1, 0, 0, 0)
