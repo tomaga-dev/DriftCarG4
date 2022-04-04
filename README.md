@@ -1,6 +1,6 @@
 # DriftCarG4
 
-This is a port of the [drift car project](https://notabug.org/tomaga/DriftCarProject) to Godot 4. Currently sound and full screen don't work. Please note that at the time of this writing Godot 4 is in alpha state.
+This is a port of the [drift car project](https://notabug.org/tomaga/DriftCarProject) to Godot 4. Currently full screen doesn't work. Please note that at the time of this writing Godot 4 is in alpha state.
 
 ### Contribution
 
