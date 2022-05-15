@@ -6,8 +6,6 @@ signal query_driver(driver)
 signal update_motor_sound(vehicle_controller)
 
 @export var force_curve: Curve
-@export var force_max_value: float = 20000
-@export var vmax: float = 20
 @export var vmax_wheel_spin: float = 6
 @export var omega_curve: Curve
 @export var omega_max: float = 0.6
@@ -28,6 +26,7 @@ signal update_motor_sound(vehicle_controller)
 @onready var rr: WheelController = get_node("RR")
 
 var driver = Driver.new()
+var gearbox = GearBox.new()
 var vehicle_state = VehicleState.new()
 var wheel_state = WheelState.new()
 var drift_angle_max_degree: float = 1
@@ -78,6 +77,7 @@ func _physics_process(delta: float):
 	vehicle_state.update(vehicle_rotation, linear_velocity)
 	acceleration_measurement = (vehicle_velocity_magnitude - velocity_measurement) / delta
 	velocity_measurement = vehicle_velocity_magnitude
+	gearbox.select_gear(vehicle_velocity_magnitude, driver.did_accelerate)
 	var steering: float = vehicle_state.drift_angle_measurement
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
 	if driver.did_accelerate:
@@ -206,18 +206,21 @@ func apply_drift_force(vehicle_rotation: Quaternion):
 	apply_force(grip_force_vector, offset_drive)
 
 func control_omega(delta: float, velocity: float):
+	var vmax: float = gearbox.get_vmax()
 	var arg: float = velocity / vmax
 	var extent: float = omega_curve.interpolate(arg)
-	var t = 2 * extent
+	var t: float
 	if is_cornering:
 		t = drift_sensitivity * extent
+	else:
+		t = extent
 	var direction: float
 	if driver.did_steer_left:
 		direction = 1
 	if driver.did_steer_right:
 		direction = -1
 	if vehicle_state.velocity_rear_axis > velocity: # Obstacle detected ?
-		extent = 1
+		t = 1
 	if driver.did_steer:
 		omega_reference = extent * lerp(omega_reference, omega_max * direction, t * delta)
 	else:
@@ -230,14 +233,15 @@ func update_wheel_rotation(delta: float, steering: float):
 	rr.rotate_wheel(delta, wheel_state.total_movement_rear, 0)
 
 func accelerate():
-	acceleration_force = force_max_value * force_curve.interpolate(velocity_measurement / vmax)
+	var vmax: float = gearbox.get_vmax()
+	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.interpolate(velocity_measurement / vmax)
 	var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 	apply_force(force_vector, offset_drive)
 
 func reverse():
 	var velocity_max_reverse: float = 7
 	if velocity_measurement < velocity_max_reverse:
-		acceleration_force = force_max_value * 0.5
+		acceleration_force = gearbox.force_max_value[1]
 		var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 		apply_force(-force_vector, offset_drive)
 
@@ -276,6 +280,34 @@ func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 	contact_rear = rl.add_spring_force(delta, self, vehicle_rotation)
 	contact_rear = rr.add_spring_force(delta, self, vehicle_rotation) && contact_rear
 	return contact_front && contact_rear
+
+class GearBox:
+	var gear_max: int
+	var gear: int
+	var vmin: Array = [0, 0, 6.0, 10.0, 20.0, 30.0]
+	var vmax: Array = [0, 15.0, 25.0, 35.0, 45.0, 55.0]
+	var force_max_value: Array = [20000, 16000, 13000, 11000, 10000, 10000]
+
+	func _init():
+		gear_max = vmax.size() - 1
+		gear = 1
+
+	func get_vmax() -> float:
+		return vmax[gear]
+
+	func select_gear(speed: float, accelerating: bool):
+		if accelerating:
+			if gear < gear_max:
+				if speed > 0.95 * vmax[gear]:
+					gear += 1
+			if speed < vmin[gear]:
+				for index in range(vmin.size()):
+					if vmin[index] < speed:
+						gear = index
+		else:
+			if gear > 1:
+				if speed < vmin[gear]:
+					gear -= 1
 
 class VehicleState:
 	var velocity_front_axis: float
