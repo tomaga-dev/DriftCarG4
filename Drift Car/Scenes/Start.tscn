@@ -14,8 +14,11 @@
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
 sky_top_color = Color(0, 0.620417, 1, 1)
 sky_horizon_color = Color(0.96, 0.973333, 1, 1)
-sky_curve = 0.0315336
-ground_horizon_color = Color(0.96, 0.973333, 1, 1)
+sky_curve = 0.0349888
+ground_bottom_color = Color(0.2, 0.168627, 0.129412, 1)
+ground_horizon_color = Color(1, 1, 1, 1)
+ground_curve = 0.393966
+ground_energy = 2.0
 sun_curve = 0.270375
 
 [sub_resource type="Sky" id="Sky_wbhdn"]
@@ -24,10 +27,9 @@ sky_material = SubResource( "ProceduralSkyMaterial_87l1k" )
 [sub_resource type="Environment" id="Environment_e3rv3"]
 background_mode = 2
 sky = SubResource( "Sky_wbhdn" )
-ambient_light_source = 3
-reflected_light_source = 2
-tonemap_mode = 2
-auto_exposure_enabled = true
+ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
+ambient_light_sky_contribution = 0.1
+tonemap_mode = 3
 
 [sub_resource type="CameraEffects" id="CameraEffects_2vxr5"]
 dof_blur_far_distance = 120.0
@@ -69,6 +71,7 @@ f3_node = NodePath("../Monteri/F3")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.183996, 0.973116, -0.138532, 0, 0.140938, 0.990018, 0.982927, 0.18216, -0.0259321, -1.70368, 12.6744, -0.234682)
+light_energy = 0.7
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
