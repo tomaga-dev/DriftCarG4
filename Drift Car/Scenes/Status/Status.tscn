@@ -28,7 +28,7 @@ __meta__ = {
 [node name="Vertical" type="ColorRect" parent="."]
 anchor_bottom = 1.0
 offset_top = 29.0
-offset_right = 302.0
+offset_right = 313.0
 grow_vertical = 2
 color = Color(0.121569, 0.054902, 0, 0.615686)
 __meta__ = {
@@ -37,12 +37,17 @@ __meta__ = {
 }
 
 [node name="Info" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 18.0
+offset_right = 110.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.894118, 0.384314, 0.0470588, 1)
 theme_override_fonts/font = SubResource( "Font_wvyq2" )
 theme_override_font_sizes/font_size = 18
 text = "ESC to quit"
+__meta__ = {
+"_edit_layout_mode": 0,
+"_edit_use_custom_anchors": false
+}
 
 [node name="FPS" type="Label" parent="."]
 anchor_left = 1.0
@@ -60,9 +65,10 @@ __meta__ = {
 }
 
 [node name="Debug" type="Label" parent="."]
-offset_top = 29.0
+offset_left = 20.0
+offset_top = 32.0
 offset_right = 302.0
-offset_bottom = 58.0
+offset_bottom = 61.0
 theme_override_fonts/font = SubResource( "Font_01wd5" )
 theme_override_font_sizes/font_size = 18
 text = "Debug output
