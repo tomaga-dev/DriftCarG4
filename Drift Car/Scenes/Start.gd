@@ -28,7 +28,7 @@ func _process(_delta):
 	var format = "FPS: %2.0f"
 	fps_label.text = format % fps
 	format = "Speed: %.0f m/s (Acceleration: %.1f)\n"
-	format += "Force: %.1f\n"
+	format += "Force: %.1f N\n"
 	format += "Velocity Sideways: %.0f m/s\n"
 	format += "Velocity Rear: %.0f m/s\n\n"
 	format += "Gear: %s\n"
