@@ -136,7 +136,7 @@ func adjust_steering(delta: float, vehicle_rotation: Quaternion):
 	if driver.did_steer_right:
 		omega_reference = lerp(omega_reference, -omega_max, 2 * delta)
 	if !driver.did_steer:
-		omega_reference = lerp(omega_reference, 0, 2 * delta)
+		omega_reference = lerp(omega_reference, 0.0, 2 * delta)
 	apply_steering_force(vehicle_rotation)
 
 func apply_steering_force(vehicle_rotation: Quaternion):
@@ -182,7 +182,7 @@ func adjust_cornering(delta: float, vehicle_rotation: Quaternion):
 				omega_reference = lerp(omega_reference, -omega_max_drift, delta)
 	if !is_cornering:
 		if !driver.did_steer:
-			omega_reference = lerp(omega_reference, 0, 2 * delta)
+			omega_reference = lerp(omega_reference, 0.0, 2 * delta)
 			driver.did_counter_steer = false
 	apply_drift_force(vehicle_rotation)
 
@@ -224,7 +224,7 @@ func control_omega(delta: float, velocity: float):
 	if driver.did_steer:
 		omega_reference = extent * lerp(omega_reference, omega_max * direction, t * delta)
 	else:
-		omega_reference = lerp(omega_reference, 0, 15 * delta)
+		omega_reference = lerp(omega_reference, 0.0, 15 * delta)
 
 func update_wheel_rotation(delta: float, steering: float):
 	fl.rotate_wheel(delta, wheel_state.total_movement_front, steering)
