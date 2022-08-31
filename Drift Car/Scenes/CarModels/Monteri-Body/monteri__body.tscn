@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://eioouhg1eu0j"]
+
+[ext_resource type="PackedScene" uid="uid://bqj1o5ipnra5p" path="res://Scenes/CarModels/Monteri-Body/Monteri-Body.glb" id="1_06w2c"]
+
+[node name="Monteri-Body" instance=ExtResource("1_06w2c")]
