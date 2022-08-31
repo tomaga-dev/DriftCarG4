@@ -14,7 +14,7 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Scenes/VehicleController/PIDController/PIDController.gd"
 }, {
-"base": "RigidDynamicBody3D",
+"base": "RigidBody3D",
 "class": &"VehicleController",
 "language": &"GDScript",
 "path": "res://Scenes/VehicleController/VehicleController.gd"
@@ -36,6 +36,10 @@ config/name="Drift Car"
 run/main_scene="res://Scenes/Start.tscn"
 config/features=PackedStringArray("4.0", "Vulkan Clustered")
 config/icon="res://icon.png"
+
+[display]
+
+window/size/fullscreen=true
 
 [input]
 

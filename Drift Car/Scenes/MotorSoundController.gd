@@ -33,7 +33,7 @@ func _ready():
 	time_start = Time.get_ticks_msec()
 
 func _on_monteri_update_motor_sound(vehicle_controller):
-	var car: VehicleController = vehicle_controller
+	var car = vehicle_controller
 	var cut_off: bool
 	var vmax: float = car.gearbox.get_vmax()
 	var v_cut_off = vmax * 0.94

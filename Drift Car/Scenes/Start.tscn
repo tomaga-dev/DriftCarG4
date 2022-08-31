@@ -4,9 +4,9 @@
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
 [ext_resource type="Script" path="res://Scenes/MotorSoundController.gd" id="3_vtcu0"]
 [ext_resource type="Script" path="res://Scenes/Camera.gd" id="3_wjqso"]
-[ext_resource type="PackedScene" uid="uid://8gvodawxeog" path="res://Scenes/Maps/Map-1/Ground.tscn" id="4_ymbyv"]
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
+[ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
 [ext_resource type="AudioStream" uid="uid://brcb6pfkjh7o7" path="res://Scenes/VehicleController/F30.wav" id="8_w7ile"]
 [ext_resource type="AudioStream" uid="uid://c5plebs0bvlrb" path="res://Scenes/VehicleController/F60.wav" id="9_c87uc"]
 [ext_resource type="AudioStream" uid="uid://ddiexjbac6dj4" path="res://Scenes/VehicleController/F110.wav" id="10_352ti"]
@@ -68,6 +68,10 @@ f2_node = NodePath("../Monteri/F2")
 f3_node = NodePath("../Monteri/F3")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.183996, 0.973116, -0.138532, 0, 0.140938, 0.990018, 0.982927, 0.18216, -0.0259321, -1.70368, 12.6744, -0.234682)
@@ -85,7 +89,7 @@ script = ExtResource("3_wjqso")
 target_node = NodePath("../Monteri/CameraTarget")
 vehicle_controller_node = NodePath("../Monteri")
 
-[node name="Ground" parent="." instance=ExtResource("4_ymbyv")]
+[node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
 [node name="GroundLimits" type="StaticBody3D" parent="."]
 

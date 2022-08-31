@@ -39,6 +39,6 @@ func _process(_delta):
 	format += "Countersteering: %s\n"
 	format += "Cornering: %s\n"
 	format += "Left: %s\nRight: %s\n"
-	status_text = format % [speed, acceleration, force, velocity_sideways, velocity_rear_axis, gear, grip, grip_force, omega_measurement, omega_reference, rad2deg(drift_angle), countersteering, cornering, cornering_left, cornering_right]
+	status_text = format % [speed, acceleration, force, velocity_sideways, velocity_rear_axis, gear, grip, grip_force, omega_measurement, omega_reference, rad_to_deg(drift_angle), countersteering, cornering, cornering_left, cornering_right]
 	debug_label.text = status_text
 	

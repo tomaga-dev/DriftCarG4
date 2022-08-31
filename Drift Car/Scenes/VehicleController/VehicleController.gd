@@ -1,4 +1,4 @@
-extends RigidDynamicBody3D
+extends RigidBody3D
 
 class_name VehicleController
 
@@ -81,7 +81,7 @@ func _physics_process(delta: float):
 	var steering: float = vehicle_state.drift_angle_measurement
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
 	if driver.did_accelerate:
-		if vehicle_state.drift_angle_measurement > deg2rad(-drift_angle_max_degree) && vehicle_state.drift_angle_measurement < deg2rad(drift_angle_max_degree):
+		if vehicle_state.drift_angle_measurement > deg_to_rad(-drift_angle_max_degree) && vehicle_state.drift_angle_measurement < deg_to_rad(drift_angle_max_degree):
 			has_grip = true
 			is_cornering = false
 			is_cornering_left = false

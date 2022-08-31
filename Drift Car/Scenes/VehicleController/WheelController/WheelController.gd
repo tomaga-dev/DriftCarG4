@@ -35,7 +35,7 @@ func init_suspension(rest_force: float, arg_spring_distance_max: float, arg_spri
 	spring_distance = 0
 	spring_rest_position = rest_force / spring_constant
 
-func add_spring_force(delta: float, vehicle_body: RigidDynamicBody3D, vehicle_rotation: Quaternion) -> bool:
+func add_spring_force(delta: float, vehicle_body: RigidBody3D, vehicle_rotation: Quaternion) -> bool:
 	var has_contact: bool = ray.is_colliding()
 	if has_contact:
 		var contact_point: Vector3 = ray.get_collision_point()
@@ -59,7 +59,7 @@ func add_spring_force(delta: float, vehicle_body: RigidDynamicBody3D, vehicle_ro
 	return has_contact
 
 func rotate_wheel(delta: float, distance_moved: float, steering_angle: float):
-	var steering_max: float = deg2rad(45)
+	var steering_max: float = deg_to_rad(45)
 	var rotation_angle = 2 * PI * distance_moved / circumference
 	var movement_rotation: Quaternion = Quaternion(Vector3.LEFT, rotation_angle)
 	if steering_angle > steering_max:
