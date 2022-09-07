@@ -208,7 +208,7 @@ func apply_drift_force(vehicle_rotation: Quaternion):
 func control_omega(delta: float, velocity: float):
 	var vmax: float = gearbox.get_vmax()
 	var arg: float = velocity / vmax
-	var extent: float = omega_curve.interpolate(arg)
+	var extent: float = omega_curve.sample(arg)
 	var t: float
 	if is_cornering:
 		t = drift_sensitivity * extent
@@ -234,7 +234,7 @@ func update_wheel_rotation(delta: float, steering: float):
 
 func accelerate():
 	var vmax: float = gearbox.get_vmax()
-	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.interpolate(velocity_measurement / vmax)
+	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.sample(velocity_measurement / vmax)
 	var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 	apply_force(force_vector, offset_drive)
 
