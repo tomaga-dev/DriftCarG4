@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dta6xmmmfyvka"]
+[gd_scene load_steps=20 format=3 uid="uid://dta6xmmmfyvka"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -18,7 +18,6 @@ sky_curve = 0.0349888
 ground_bottom_color = Color(0.2, 0.168627, 0.129412, 1)
 ground_horizon_color = Color(1, 1, 1, 1)
 ground_curve = 0.393966
-ground_energy = 2.0
 sun_curve = 0.270375
 
 [sub_resource type="Sky" id="Sky_wbhdn"]
@@ -30,10 +29,6 @@ sky = SubResource("Sky_wbhdn")
 ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
 ambient_light_sky_contribution = 0.1
 tonemap_mode = 3
-
-[sub_resource type="CameraEffects" id="CameraEffects_2vxr5"]
-dof_blur_far_distance = 120.0
-dof_blur_far_transition = 60.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
 size = Vector3(500, 100, 10)
@@ -80,7 +75,6 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_e3rv3")
-camera_effects = SubResource("CameraEffects_2vxr5")
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.74724, -0.127321, 0.652245, -5.42986, 2.63843, 4.82904)
