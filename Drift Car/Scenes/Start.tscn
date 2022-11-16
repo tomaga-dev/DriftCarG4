@@ -79,7 +79,6 @@ transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.
 fov = 40.0
 script = ExtResource("3_wjqso")
 target_node = NodePath("../Monteri/CameraTarget")
-vehicle_controller_node = NodePath("../Monteri")
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
