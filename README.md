@@ -7,7 +7,7 @@ This is a port of the [drift car project](https://notabug.org/tomaga/DriftCarPro
 Error reports, sugestions etc. are very welcome.
 
 ### Godot Version
-This project was tested with Godot 4RC1.
+This project was tested with Godot 4.0.
 
 ### Credits
 
