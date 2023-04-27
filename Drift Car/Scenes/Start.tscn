@@ -11,7 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://kd401yj76x1f" path="res://Scenes/VehicleController/Off.wav" id="9_v8sp6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
-sky_top_color = Color(0, 0.620417, 1, 1)
+sky_top_color = Color(0, 0.619608, 1, 1)
 sky_horizon_color = Color(0.96, 0.973333, 1, 1)
 sky_curve = 0.0349888
 ground_bottom_color = Color(0.2, 0.168627, 0.129412, 1)
@@ -28,6 +28,10 @@ sky = SubResource("Sky_wbhdn")
 ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
 ambient_light_sky_contribution = 0.1
 tonemap_mode = 3
+fog_enabled = true
+fog_light_color = Color(0, 0.619608, 1, 1)
+fog_density = 0.003
+fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
 size = Vector3(500, 100, 10)
@@ -121,6 +125,9 @@ bus = &"On"
 [node name="Off" type="AudioStreamPlayer3D" parent="Monteri"]
 stream = ExtResource("9_v8sp6")
 bus = &"Off"
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
+size = Vector3(500, 100, 500)
 
 [connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
 [connection signal="update_motor_sound" from="Monteri" to="MotorSoundController" method="_on_monteri_update_motor_sound"]
