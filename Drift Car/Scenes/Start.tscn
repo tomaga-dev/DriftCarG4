@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dta6xmmmfyvka"]
+[gd_scene load_steps=20 format=3 uid="uid://dta6xmmmfyvka"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
 [ext_resource type="AudioStream" uid="uid://ccyc3vgmbyt8l" path="res://Scenes/VehicleController/On.wav" id="8_xy2to"]
 [ext_resource type="AudioStream" uid="uid://kd401yj76x1f" path="res://Scenes/VehicleController/Off.wav" id="9_v8sp6"]
+[ext_resource type="PackedScene" uid="uid://dq0ak78bjfpfr" path="res://Scenes/Maps/ArcBridge/arc_bridge.tscn" id="10_3acnn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
 sky_top_color = Color(0, 0.619608, 1, 1)
@@ -28,10 +29,12 @@ sky = SubResource("Sky_wbhdn")
 ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
 ambient_light_sky_contribution = 0.1
 tonemap_mode = 3
-fog_enabled = true
 fog_light_color = Color(0, 0.619608, 1, 1)
-fog_density = 0.003
 fog_sky_affect = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_anisotropy = -0.11
+volumetric_fog_detail_spread = 0.5
+volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
 size = Vector3(500, 100, 10)
@@ -65,13 +68,9 @@ on_node = NodePath("../Monteri/On")
 off_node = NodePath("../Monteri/Off")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.183996, 0.973116, -0.138532, 0, 0.140938, 0.990018, 0.982927, 0.18216, -0.0259321, -1.70368, 12.6744, -0.234682)
+transform = Transform3D(-0.986286, 0.10609, -0.126433, 0, 0.766045, 0.642788, 0.165047, 0.633972, -0.755538, -20.3359, 103.738, -121.523)
 light_energy = 0.7
 shadow_enabled = true
 
@@ -128,6 +127,9 @@ bus = &"Off"
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 size = Vector3(500, 100, 500)
+
+[node name="ArcBridge" parent="." instance=ExtResource("10_3acnn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)
 
 [connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
 [connection signal="update_motor_sound" from="Monteri" to="MotorSoundController" method="_on_monteri_update_motor_sound"]
