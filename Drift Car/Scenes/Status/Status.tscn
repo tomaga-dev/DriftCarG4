@@ -1,16 +1,22 @@
 [gd_scene format=3 uid="uid://bhqt5d5hg31xl"]
 
 [node name="Status" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Horizontal" type="ColorRect" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 offset_bottom = 29.0
 grow_horizontal = 2
 color = Color(0.121569, 0.054902, 0, 0.615686)
 
 [node name="Vertical" type="ColorRect" parent="."]
+layout_mode = 0
 anchor_bottom = 1.0
 offset_top = 29.0
 offset_right = 313.0
@@ -18,6 +24,7 @@ grow_vertical = 2
 color = Color(0.121569, 0.054902, 0, 0.615686)
 
 [node name="Info" type="Label" parent="."]
+layout_mode = 0
 offset_left = 18.0
 offset_right = 110.0
 offset_bottom = 29.0
@@ -26,6 +33,7 @@ theme_override_font_sizes/font_size = 18
 text = "ESC to quit"
 
 [node name="FPS" type="Label" parent="."]
+layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -84.0
@@ -36,6 +44,7 @@ theme_override_font_sizes/font_size = 18
 text = "FPS: 000"
 
 [node name="Debug" type="Label" parent="."]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 32.0
 offset_right = 302.0
