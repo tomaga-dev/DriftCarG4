@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://dq0ak78bjfpfr"]
+
+[ext_resource type="PackedScene" uid="uid://tasdh8s22jxn" path="res://Scenes/Maps/ArcBridge/ArcBridge.glb" id="1_ocoh2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y7u0g"]
+size = Vector3(3.4, 4, 6)
+
+[node name="ArcBridge" instance=ExtResource("1_ocoh2")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Arc1" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.76258, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0331, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.73191, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.4183, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.1221, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.9184, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.4997, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="Arc1/StaticBody3D" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.8644, 0, 0)
+shape = SubResource("BoxShape3D_y7u0g")
