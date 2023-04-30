@@ -8,10 +8,10 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wa83h"]
 albedo_texture = ExtResource("2_eqra7")
-roughness = 0.82
+roughness = 0.27
 roughness_texture = ExtResource("5_jr0pj")
 ao_enabled = true
-ao_light_affect = 0.27
+ao_light_affect = 0.35
 ao_texture = ExtResource("3_6k2xw")
 heightmap_enabled = true
 heightmap_scale = 16.0
