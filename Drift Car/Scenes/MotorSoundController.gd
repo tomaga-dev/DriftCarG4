@@ -7,7 +7,7 @@ var on: AudioStreamPlayer3D
 var off: AudioStreamPlayer3D
 
 var rev_min: float = 1
-var rev_multiplier: float = 6 # Higher values result in higher revs.
+var rev_multiplier: float = 5 # Higher values result in higher revs.
 var amplification_on: AudioEffectAmplify
 var amplification_off: AudioEffectAmplify
 var time_start: int
@@ -32,7 +32,8 @@ func _on_monteri_update_motor_sound(vehicle_controller):
 	var vmax: float = car.gearbox.get_vmax()
 	var v_cut_off = vmax * 0.94
 	var speed: float = car.linear_velocity.length()
-	var pitch = rev_min + rev_multiplier * speed / vmax
+	var gradient: float = rev_multiplier * speed / vmax
+	var pitch: float
 	time_now = Time.get_ticks_msec()
 	if time_now >= time_start + 105:
 		time_diff = 0.5 * (time_now - time_start)
@@ -43,12 +44,13 @@ func _on_monteri_update_motor_sound(vehicle_controller):
 		cut_off = false
 	if car.driver.did_accelerate && car.on_ground:
 		if speed > v_cut_off && cut_off:
-			amplification_on.volume_db = -18
+			amplification_on.volume_db = -40
 		else:
-			amplification_on.volume_db = -6
-		amplification_off.volume_db = -18
+			amplification_on.volume_db = 0
+		amplification_off.volume_db = -40
 	else:
-		amplification_on.volume_db = -24
-		amplification_off.volume_db = -10
+		amplification_on.volume_db = -40
+		amplification_off.volume_db = -4 * gradient
+	pitch = rev_min + gradient
 	on.pitch_scale = pitch
 	off.pitch_scale = pitch

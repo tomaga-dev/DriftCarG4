@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dta6xmmmfyvka"]
+[gd_scene load_steps=20 format=3 uid="uid://bmddi06hputur"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
-[ext_resource type="AudioStream" uid="uid://ccyc3vgmbyt8l" path="res://Scenes/VehicleController/On.wav" id="8_xy2to"]
-[ext_resource type="AudioStream" uid="uid://kd401yj76x1f" path="res://Scenes/VehicleController/Off.wav" id="9_v8sp6"]
+[ext_resource type="AudioStream" uid="uid://ccyc3vgmbyt8l" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
+[ext_resource type="AudioStream" uid="uid://kd401yj76x1f" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
 [ext_resource type="PackedScene" uid="uid://dq0ak78bjfpfr" path="res://Scenes/Maps/ArcBridge/arc_bridge.tscn" id="10_3acnn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
@@ -118,11 +118,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0.56)
 shape = SubResource("BoxShape3D_jikxc")
 
 [node name="On" type="AudioStreamPlayer3D" parent="Monteri"]
-stream = ExtResource("8_xy2to")
+stream = ExtResource("8_5x8ta")
 bus = &"On"
 
 [node name="Off" type="AudioStreamPlayer3D" parent="Monteri"]
-stream = ExtResource("9_v8sp6")
+stream = ExtResource("9_dqhyg")
 bus = &"Off"
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
