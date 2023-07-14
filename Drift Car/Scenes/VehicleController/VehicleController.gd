@@ -284,8 +284,8 @@ func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 class GearBox:
 	var gear_max: int
 	var gear: int
-	var vmin: Array = [0, 0, 6.0, 10.0, 20.0, 30.0]
-	var vmax: Array = [0, 15.0, 25.0, 35.0, 45.0, 55.0]
+	var vmin: Array = [0, 0, 14.0, 25.0, 39.0, 50.0]
+	var vmax: Array = [0, 25.0, 39.0, 50.0, 58.0, 64.0]
 	var force_max_value: Array = [20000, 16000, 13000, 11000, 10000, 10000]
 
 	func _init():
