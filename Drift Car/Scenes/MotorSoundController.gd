@@ -42,15 +42,19 @@ func _on_monteri_update_motor_sound(vehicle_controller):
 		cut_off = true
 	else:
 		cut_off = false
-	if car.driver.did_accelerate && car.on_ground:
-		if speed > v_cut_off && cut_off:
-			amplification_on.volume_db = -40
+	if car.on_ground:
+		if car.driver.did_accelerate:
+			if speed > v_cut_off && cut_off:
+				amplification_on.volume_db = -40
+			else:
+				amplification_on.volume_db = 0
+			amplification_off.volume_db = -40
 		else:
-			amplification_on.volume_db = 0
-		amplification_off.volume_db = -40
+			amplification_on.volume_db = -40
+			amplification_off.volume_db = -4 * gradient
 	else:
 		amplification_on.volume_db = -40
-		amplification_off.volume_db = -4 * gradient
+		amplification_off.volume_db = -20
 	pitch = rev_min + gradient
 	on.pitch_scale = pitch
 	off.pitch_scale = pitch
