@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
-[ext_resource type="AudioStream" uid="uid://ccyc3vgmbyt8l" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
-[ext_resource type="AudioStream" uid="uid://kd401yj76x1f" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
+[ext_resource type="AudioStream" uid="uid://coavl778ify5y" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
+[ext_resource type="AudioStream" uid="uid://6alyab3du2n5" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
 [ext_resource type="PackedScene" uid="uid://dq0ak78bjfpfr" path="res://Scenes/Maps/ArcBridge/arc_bridge.tscn" id="10_3acnn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87l1k"]
