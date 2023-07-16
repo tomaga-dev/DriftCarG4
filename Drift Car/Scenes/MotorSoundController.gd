@@ -43,7 +43,10 @@ func _on_monteri_update_motor_sound(vehicle_controller):
 	else:
 		cut_off = false
 	if car.on_ground:
-		if car.driver.did_accelerate:
+		if car.is_shifting():
+			amplification_on.volume_db = -40
+			amplification_off.volume_db = -20
+		else: if car.driver.did_accelerate:
 			if speed > v_cut_off && cut_off:
 				amplification_on.volume_db = -40
 			else:

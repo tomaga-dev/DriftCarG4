@@ -7,6 +7,7 @@ signal update_motor_sound(vehicle_controller)
 
 @export var force_curve: Curve
 @export var vmax_wheel_spin: float = 6
+@export var shift_time: int = 20
 @export var omega_curve: Curve
 @export var omega_max: float = 0.6
 @export var omega_max_drift: float = 1.2
@@ -57,6 +58,7 @@ func _ready():
 	fr.init_suspension(weight / 4, spring_distance_max, spring_constant, spring_damping)
 	rl.init_suspension(weight / 4, spring_distance_max, spring_constant, spring_damping)
 	rr.init_suspension(weight / 4, spring_distance_max, spring_constant, spring_damping)
+	gearbox.gear_shift_time = shift_time
 
 func _physics_process(delta: float):
 	var torque: float
@@ -232,7 +234,12 @@ func update_wheel_rotation(delta: float, steering: float):
 	rl.rotate_wheel(delta, wheel_state.total_movement_rear, 0)
 	rr.rotate_wheel(delta, wheel_state.total_movement_rear, 0)
 
+func is_shifting():
+	return gearbox.gear_changing
+
 func accelerate():
+	if gearbox.gear_changing:
+		return
 	var vmax: float = gearbox.get_vmax()
 	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.sample(velocity_measurement / vmax)
 	var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
@@ -282,8 +289,12 @@ func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 	return contact_front && contact_rear
 
 class GearBox:
+	var gear_shift_time: int
 	var gear_max: int
 	var gear: int
+	var gear_now: int
+	var gear_changing: bool
+	var gear_change_time: int
 	var vmin: Array = [0, 0, 14.0, 25.0, 39.0, 50.0]
 	var vmax: Array = [0, 25.0, 39.0, 50.0, 58.0, 64.0]
 	var force_max_value: Array = [20000, 16000, 13000, 11000, 10000, 10000]
@@ -291,19 +302,30 @@ class GearBox:
 	func _init():
 		gear_max = vmax.size() - 1
 		gear = 1
+		gear_changing = false
+		gear_change_time = 0
 
 	func get_vmax() -> float:
 		return vmax[gear]
 
 	func select_gear(speed: float, accelerating: bool):
+		if gear_change_time > 0:
+			gear_change_time -= 1
+			return
+		gear_changing = false
+		gear_now = gear
 		if accelerating:
 			if gear < gear_max:
 				if speed > 0.95 * vmax[gear]:
 					gear += 1
+					gear_changing = true
+					gear_change_time = gear_shift_time
 			if speed < vmin[gear]:
 				for index in range(vmin.size()):
 					if vmin[index] < speed:
 						gear = index
+						gear_changing = true
+						gear_change_time = gear_shift_time
 		else:
 			if gear > 1:
 				if speed < vmin[gear]:
@@ -367,6 +389,7 @@ class Driver:
 		did_accelerate = false
 		did_reverse = false
 		did_brake = false
+
 
 	func turn_left():
 		did_steer_left = true
