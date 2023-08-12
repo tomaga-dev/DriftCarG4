@@ -1,9 +1,17 @@
 extends Node
 
+@export var player_node: NodePath
 @onready var fps_label = get_node("Status/FPS")
 @onready var debug_label = get_node("Status/Debug")
-@onready var car = get_node("Monteri")
 
+var player: Node
+var car: VehicleController
+
+
+func _ready():
+	player = get_node(player_node)
+	car = player.car
+	randomize()
 
 func _process(_delta):
 	if Input.is_action_just_released("ui_cancel"):

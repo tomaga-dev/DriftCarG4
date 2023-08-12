@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
-[ext_resource type="Script" path="res://Scenes/MotorSoundController.gd" id="3_vtcu0"]
 [ext_resource type="Script" path="res://Scenes/Camera.gd" id="3_wjqso"]
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
+[ext_resource type="PackedScene" uid="uid://cvurpj231f18r" path="res://Scenes/sound_emitter.tscn" id="7_8r1bc"]
 [ext_resource type="AudioStream" uid="uid://coavl778ify5y" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
 [ext_resource type="AudioStream" uid="uid://6alyab3du2n5" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
 [ext_resource type="PackedScene" uid="uid://dq0ak78bjfpfr" path="res://Scenes/Maps/ArcBridge/arc_bridge.tscn" id="10_3acnn"]
@@ -58,14 +58,11 @@ height = 3.5
 
 [node name="Start" type="Node"]
 script = ExtResource("1_gi87r")
+player_node = NodePath("Player")
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("2_g27tf")
-
-[node name="MotorSoundController" type="Node" parent="."]
-script = ExtResource("3_vtcu0")
-on_node = NodePath("../Monteri/On")
-off_node = NodePath("../Monteri/Off")
+car_node = NodePath("../Monteri")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
 
@@ -81,7 +78,7 @@ environment = SubResource("Environment_e3rv3")
 transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.74724, -0.127321, 0.652245, -5.42986, 2.63843, 4.82904)
 fov = 40.0
 script = ExtResource("3_wjqso")
-target_node = NodePath("../Monteri/CameraTarget")
+player_node = NodePath("../Player")
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
@@ -105,17 +102,11 @@ shape = SubResource("BoxShape3D_37nhg")
 
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+rev_min = 1.6
+rev_multiplier = 5.5
 
 [node name="CameraTarget" type="Node3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
-
-[node name="On" type="AudioStreamPlayer3D" parent="Monteri"]
-stream = ExtResource("8_5x8ta")
-bus = &"On"
-
-[node name="Off" type="AudioStreamPlayer3D" parent="Monteri"]
-stream = ExtResource("9_dqhyg")
-bus = &"Off"
 
 [node name="CollisionShapeTop" type="CollisionShape3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0.56)
@@ -129,6 +120,17 @@ shape = SubResource("CapsuleShape3D_kmjwe")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.77, 0, 0)
 shape = SubResource("CapsuleShape3D_kmjwe")
 
+[node name="SoundEmitter" parent="Monteri" instance=ExtResource("7_8r1bc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0171307, 2.20283)
+
+[node name="Acceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter"]
+stream = ExtResource("8_5x8ta")
+bus = &"On"
+
+[node name="Deceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter"]
+stream = ExtResource("9_dqhyg")
+bus = &"Off"
+
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 size = Vector3(500, 100, 500)
 
@@ -136,4 +138,3 @@ size = Vector3(500, 100, 500)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)
 
 [connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
-[connection signal="update_motor_sound" from="Monteri" to="MotorSoundController" method="_on_monteri_update_motor_sound"]
