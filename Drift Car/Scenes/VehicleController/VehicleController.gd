@@ -2,12 +2,13 @@ extends RigidBody3D
 
 class_name VehicleController
 
-signal query_driver(driver)
-signal update_motor_sound(vehicle_controller)
+signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 
+@export var rev_min: float = 1
+@export var rev_multiplier: float = 5 # Higher values result in higher revs.
+@export var shift_time: int = 20
 @export var force_curve: Curve
 @export var vmax_wheel_spin: float = 6
-@export var shift_time: int = 20
 @export var omega_curve: Curve
 @export var omega_max: float = 0.6
 @export var omega_max_drift: float = 1.2
@@ -25,7 +26,9 @@ signal update_motor_sound(vehicle_controller)
 @onready var fr: WheelController = get_node("FR")
 @onready var rl: WheelController = get_node("RL")
 @onready var rr: WheelController = get_node("RR")
+@onready var sound_emitter: SoundEmitter = get_node("SoundEmitter")
 
+var motor = Motor.new()
 var driver = Driver.new()
 var gearbox = GearBox.new()
 var vehicle_state = VehicleState.new()
@@ -46,7 +49,8 @@ var acceleration_force: float
 var is_cornering: bool
 var is_cornering_left: bool
 var is_cornering_right: bool
-
+var rev_normalized: float
+var rev: float
 
 func _ready():
 	var weight: float = mass * ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -66,8 +70,10 @@ func _physics_process(delta: float):
 	var vehicle_velocity_magnitude: float = linear_velocity.length()
 	var vehicle_rotation = Quaternion(transform.basis)
 	on_ground = update_suspension(delta, vehicle_rotation)
-	emit_signal("update_motor_sound", self)
-	emit_signal("query_driver", driver)
+	rev_normalized = motor.update_state(self)
+	rev = rev_normalized * rev_multiplier
+	sound_emitter.update_motor_sound(self)
+	emit_signal("query_driver", self, rev_normalized)
 	if !on_ground:
 		has_grip = false
 		grip_force = steering_controller.reset()
@@ -287,6 +293,52 @@ func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 	contact_rear = rl.add_spring_force(delta, self, vehicle_rotation)
 	contact_rear = rr.add_spring_force(delta, self, vehicle_rotation) && contact_rear
 	return contact_front && contact_rear
+
+class Motor:
+	var on: float = 0
+	var off: float = 0
+	var time_start: int = Time.get_ticks_msec()
+	var time_now: int
+	var time_diff: int = 52 # milliseconds
+	var speed_now: float = 0
+	var speed_delta: float = 0.5
+
+	func update_state(car: VehicleController) -> float:
+		var cut_off: bool
+		var vmax: float = car.gearbox.get_vmax()
+		var v_cut_off: float = vmax * 0.97
+		var speed: float = car.linear_velocity.length()
+		var rev_normalized: float = get_rev_from_speed(speed, vmax)
+		time_now = Time.get_ticks_msec()
+		if time_now >= time_start + 2 * time_diff:
+			time_start = time_now
+		if time_now >= time_start + time_diff:
+			cut_off = true
+		else:
+			cut_off = false
+		set_volume(car, speed, v_cut_off, cut_off, rev_normalized)
+		return rev_normalized
+
+	func set_volume(car: VehicleController, speed: float, v_cut_off: float, cut_off: bool, rev_normalized: float):
+		if car.gearbox.gear_changing:
+			on = -40
+			off = -20
+		else: if !car.on_ground:
+			on = -40
+			off = -20
+		else: if car.driver.did_accelerate:
+			if speed > v_cut_off && cut_off:
+				on = -40
+			else:
+				on = -3
+			off = -40
+		else:
+			on = -40
+			off = -20 * rev_normalized
+
+	func get_rev_from_speed(speed: float, vmax: float) -> float:
+		var rev_normalized: float = speed / vmax
+		return rev_normalized
 
 class GearBox:
 	var gear_shift_time: int
