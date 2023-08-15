@@ -1,8 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://bmddi06hputur"]
+[gd_scene load_steps=22 format=3 uid="uid://bmddi06hputur"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
 [ext_resource type="Script" path="res://Scenes/Camera.gd" id="3_wjqso"]
+[ext_resource type="PackedScene" uid="uid://jv4wm4mlhwqf" path="res://Scenes/dashboard.tscn" id="4_a1ewv"]
+[ext_resource type="Texture2D" uid="uid://df3yv0munac4v" path="res://Scenes/RevCounterNeedle.png" id="5_jjaii"]
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
@@ -63,8 +65,25 @@ player_node = NodePath("Player")
 [node name="Player" type="Node" parent="."]
 script = ExtResource("2_g27tf")
 car_node = NodePath("../Monteri")
+needle_node = NodePath("../Dashboard/TextureRect2")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
+
+[node name="Dashboard" parent="." instance=ExtResource("4_a1ewv")]
+
+[node name="TextureRect2" type="TextureRect" parent="Dashboard"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -256.0
+grow_horizontal = 0
+grow_vertical = 0
+pivot_offset = Vector2(128, 128)
+texture = ExtResource("5_jjaii")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.986286, 0.10609, -0.126433, 0, 0.766045, 0.642788, 0.165047, 0.633972, -0.755538, -20.3359, 103.738, -121.523)
