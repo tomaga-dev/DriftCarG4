@@ -1,13 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1wd0g2qau02q"]
+[gd_scene load_steps=10 format=3 uid="uid://c1wd0g2qau02q"]
 
 [ext_resource type="PackedScene" uid="uid://drl1kk35eoxf5" path="res://Scenes/VehicleController/WheelController/WheelController.tscn" id="1_cr034"]
 [ext_resource type="Script" path="res://Scenes/VehicleController/VehicleController.gd" id="1_jl35m"]
 [ext_resource type="PackedScene" uid="uid://c2qowk16peowo" path="res://Scenes/VehicleController/PIDController/PIDController.tscn" id="2_o5eeo"]
 [ext_resource type="Curve" uid="uid://cevokj6x7sdq5" path="res://Scenes/VehicleController/ForceCurve.tres" id="2_pribm"]
 [ext_resource type="Curve" uid="uid://v2jpbw78hfm" path="res://Scenes/VehicleController/OmegaCurve.tres" id="3_k8rck"]
+[ext_resource type="PackedScene" uid="uid://c1ollsa6y5rss" path="res://Scenes/VehicleController/GearBox/gear_box.tscn" id="6_nsme3"]
+[ext_resource type="PackedScene" uid="uid://imie6qxjhqto" path="res://Scenes/VehicleController/Driver/driver.tscn" id="7_lkqjy"]
+[ext_resource type="PackedScene" uid="uid://langvf0xk2na" path="res://Scenes/VehicleController/Motor/motor.tscn" id="8_bkw6d"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2espx"]
-size = Vector3(1.4, 0.5, 3.2)
+size = Vector3(1, 0.2, 1)
 
 [node name="VehicleController" type="RigidBody3D"]
 mass = 1480.0
@@ -16,7 +19,6 @@ force_curve = ExtResource("2_pribm")
 omega_curve = ExtResource("3_k8rck")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
 shape = SubResource("BoxShape3D_2espx")
 
 [node name="VehicleBody" type="Node3D" parent="."]
@@ -59,3 +61,9 @@ ki = 10.0
 [node name="OmegaController" parent="." instance=ExtResource("2_o5eeo")]
 kp = 50000.0
 ki = 10000.0
+
+[node name="GearBox" parent="." instance=ExtResource("6_nsme3")]
+
+[node name="Driver" parent="." instance=ExtResource("7_lkqjy")]
+
+[node name="Motor" parent="." instance=ExtResource("8_bkw6d")]

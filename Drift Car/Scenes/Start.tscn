@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bmddi06hputur"]
+[gd_scene load_steps=24 format=3 uid="uid://bmddi06hputur"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
 [ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
+[ext_resource type="FontFile" uid="uid://p28emkvy8p7f" path="res://Scenes/Fonts/noto_sans_ui_regular.ttf" id="6_yb40h"]
 [ext_resource type="PackedScene" uid="uid://cvurpj231f18r" path="res://Scenes/sound_emitter.tscn" id="7_8r1bc"]
 [ext_resource type="AudioStream" uid="uid://coavl778ify5y" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
 [ext_resource type="AudioStream" uid="uid://6alyab3du2n5" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
@@ -51,6 +52,13 @@ size = Vector3(10, 100, 500)
 custom_solver_bias = 1.0
 size = Vector3(10, 100, 500)
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nyvux"]
+radius = 0.2
+height = 1.9
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5lcbe"]
+size = Vector3(2, 0.3, 2)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_jikxc"]
 size = Vector3(1, 0.3, 1)
 
@@ -62,6 +70,8 @@ player_node = NodePath("Player")
 script = ExtResource("2_g27tf")
 car_node = NodePath("../Monteri")
 needle_node = NodePath("../Dashboard/TextureRect2")
+gear_node = NodePath("../Dashboard/Gear")
+speed_node = NodePath("../Dashboard/Speed")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
 
@@ -81,6 +91,38 @@ grow_vertical = 0
 pivot_offset = Vector2(128, 128)
 texture = ExtResource("5_jjaii")
 
+[node name="Gear" type="Label" parent="Dashboard"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -78.0
+offset_top = -117.0
+offset_right = -38.0
+offset_bottom = -13.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("6_yb40h")
+theme_override_font_sizes/font_size = 82
+text = "0"
+
+[node name="Speed" type="Label" parent="Dashboard"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -55.0
+offset_top = -24.0
+offset_right = -15.0
+offset_bottom = 2.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "999"
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.986286, 0.10609, -0.126433, 0, 0.766045, 0.642788, 0.165047, 0.633972, -0.755538, -20.3359, 103.738, -121.523)
 light_energy = 0.7
@@ -93,7 +135,8 @@ environment = SubResource("Environment_e3rv3")
 transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.74724, -0.127321, 0.652245, -5.42986, 2.63843, 4.82904)
 fov = 40.0
 script = ExtResource("3_wjqso")
-player_node = NodePath("../Player")
+vehicle_node = NodePath("../Monteri")
+race_mode = false
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
@@ -117,11 +160,16 @@ shape = SubResource("BoxShape3D_37nhg")
 
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
-rev_min = 1.6
-rev_multiplier = 5.5
 
 [node name="CameraTarget" type="Node3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+
+[node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0.03, -2)
+shape = SubResource("CapsuleShape3D_nyvux")
+
+[node name="CollisionShapeBody" type="CollisionShape3D" parent="Monteri"]
+shape = SubResource("BoxShape3D_5lcbe")
 
 [node name="CollisionShapeTop" type="CollisionShape3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0.56)
