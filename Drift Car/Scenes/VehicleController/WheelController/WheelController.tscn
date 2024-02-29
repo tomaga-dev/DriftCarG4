@@ -1,8 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://drl1kk35eoxf5"]
+[gd_scene load_steps=3 format=3 uid="uid://drl1kk35eoxf5"]
 
 [ext_resource type="Script" path="res://Scenes/VehicleController/WheelController/WheelController.gd" id="1_qk6ln"]
 
+[sub_resource type="Curve" id="Curve_21l2n"]
+min_value = 1.0
+max_value = 10.0
+_data = [Vector2(0.315556, 1), 0.0, 0.0, 0, 0, Vector2(1, 10), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="WheelController" type="Node3D"]
-script = ExtResource( "1_qk6ln" )
+script = ExtResource("1_qk6ln")
+spring_stiffness_curve = SubResource("Curve_21l2n")
 
 [node name="RayCast" type="RayCast3D" parent="."]
