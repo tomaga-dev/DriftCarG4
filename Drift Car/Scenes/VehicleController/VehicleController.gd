@@ -76,7 +76,6 @@ func _physics_process(delta: float):
 	sound_emitter.update_motor_sound(self)
 	emit_signal("query_driver", self, rev_normalized)
 	if !on_ground:
-		has_grip = false
 		grip_force = steering_controller.reset()
 		drift_controller.reset()
 		grip_controller.reset()
@@ -90,26 +89,29 @@ func _physics_process(delta: float):
 	var steering: float = vehicle_state.drift_angle_measurement
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
 	if driver.did_accelerate:
-		if vehicle_state.drift_angle_measurement > deg_to_rad(-max_grip_angle_degree) && vehicle_state.drift_angle_measurement < deg_to_rad(max_grip_angle_degree):
-			has_grip = true
-			is_cornering_left = false
-			is_cornering_right = false
-	else:
-		if !driver.did_steer:
-			is_cornering_left = false
-			is_cornering_right = false
 		if driver.did_steer_left:
-			if has_grip:
-				is_cornering_left = true
-		if driver.did_steer_right:
-			if has_grip:
-				is_cornering_right = true
-		has_grip = false
+			if is_cornering_left:
+				has_grip = false
+		else: if driver.did_steer_right:
+			if is_cornering_right:
+				has_grip = false
+		else:
+			if vehicle_state.drift_angle_measurement > deg_to_rad(-max_grip_angle_degree) && vehicle_state.drift_angle_measurement < deg_to_rad(max_grip_angle_degree):
+				has_grip = true
+	else:
+		if driver.did_steer_left:
+			is_cornering_left = true
+		else: if driver.did_steer_right:
+			is_cornering_right = true
+		else:
+			is_cornering_left = false
+			is_cornering_right = false
 	if has_grip:
 		drift_controller.reset()
 		grip_controller.reset()
-		adjust_steering(delta, vehicle_rotation)
 		steering = asin(wheelbase / turn_radius)
+		control_omega(delta, vehicle_velocity_magnitude)
+		apply_steering_force(vehicle_rotation)
 	else:
 		steering_controller.reset()
 		if driver.did_accelerate:
@@ -117,7 +119,7 @@ func _physics_process(delta: float):
 		else:
 			drift_controller.reset()
 			grip_force = grip_controller.reset()
-			control_omega(vehicle_velocity_magnitude)
+			control_omega(delta, vehicle_velocity_magnitude)
 	if driver.did_accelerate:
 		accelerate()
 		if vehicle_state.velocity_rear_axis < vmax_wheel_spin:
@@ -134,20 +136,16 @@ func _physics_process(delta: float):
 	wheel_state.update(delta, vehicle_state.velocity_front_axis, vehicle_state.velocity_rear_axis)
 	update_wheel_rotation(delta, steering)
 
-func adjust_steering(delta: float, vehicle_rotation: Quaternion):
-	driver.did_counter_steer = false
+func control_omega(delta: float, velocity: float):
+	var value: float = omega_curve.sample(velocity)
 	if driver.did_steer_left:
-		omega_reference = lerp(omega_reference, omega_max, 2 * delta)
+		omega_reference = lerp(omega_reference, omega_max * value, 2 * delta)
 	else: if driver.did_steer_right:
-		omega_reference = lerp(omega_reference, -omega_max, 2 * delta)
+		omega_reference = lerp(omega_reference, -omega_max * value, 2 * delta)
 	else:
 		omega_reference = lerp(omega_reference, 0.0, 2 * delta)
-	apply_steering_force(vehicle_rotation)
 
 func apply_steering_force(vehicle_rotation: Quaternion):
-	if !driver.did_accelerate:
-		grip_force = steering_controller.reset()
-		return
 	if !vehicle_state.vehicle_moving_forward:
 		grip_force = steering_controller.reset()
 		return
@@ -157,37 +155,22 @@ func apply_steering_force(vehicle_rotation: Quaternion):
 	apply_force(grip_force_vector, offset_drive)
 
 func adjust_cornering(delta: float, vehicle_rotation: Quaternion):
-	if omega_reference > -0.05 && omega_reference < 0.05:
+	if omega_reference > -omega_max && omega_reference < omega_max:
 		is_cornering_left = false
 		is_cornering_right = false
 	if driver.did_steer_left:
 		if is_cornering_right:
-			driver.did_counter_steer = true
-			omega_reference = lerp(omega_reference, omega_max_drift, delta)
+			omega_reference = lerp(omega_reference, omega_max_drift, 0.5 * delta)
 		else:
-			if is_cornering_left:
-				if driver.did_counter_steer:
-					omega_reference = lerp(omega_reference, omega_max_drift, 6 * delta)
-				else:
-					omega_reference = omega_max_drift
-			else:
-				omega_reference = lerp(omega_reference, omega_max_drift, delta)
-	if driver.did_steer_right:
+			omega_reference = lerp(omega_reference, omega_max_drift, 5 * delta)
+	else: if driver.did_steer_right:
 		if is_cornering_left:
-			driver.did_counter_steer = true
-			omega_reference = lerp(omega_reference, -omega_max_drift, delta)
+			omega_reference = lerp(omega_reference, -omega_max_drift, 0.5 * delta)
 		else:
-			if is_cornering_right:
-				if driver.did_counter_steer:
-					omega_reference = lerp(omega_reference, -omega_max_drift, 6 * delta)
-				else:
-					omega_reference = -omega_max_drift
-			else:
-				omega_reference = lerp(omega_reference, -omega_max_drift, delta)
-	if !is_cornering_left && !is_cornering_right:
-		if !driver.did_steer:
-			omega_reference = lerp(omega_reference, 0.0, 2 * delta)
-			driver.did_counter_steer = false
+			omega_reference = lerp(omega_reference, -omega_max_drift, 5 * delta)
+	else:
+		if !is_cornering_left && !is_cornering_right:
+			omega_reference = lerp(omega_reference, 0.0, 5 * delta)
 	apply_drift_force(vehicle_rotation)
 
 func apply_drift_force(vehicle_rotation: Quaternion):
@@ -208,17 +191,6 @@ func apply_drift_force(vehicle_rotation: Quaternion):
 	var direction: Vector3 = vehicle_rotation * Vector3.LEFT
 	var grip_force_vector: Vector3 = direction * grip_force
 	apply_force(grip_force_vector, offset_drive)
-
-func control_omega(velocity: float):
-	var vmax: float = gearbox.get_vmax()
-	var arg: float = velocity / vmax
-	var value: float = omega_curve.sample(arg)
-	if driver.did_steer_left:
-		omega_reference = omega_max * value
-	else: if driver.did_steer_right:
-		omega_reference = -omega_max * value
-	else:
-		omega_reference = 0
 
 func update_wheel_rotation(delta: float, steering: float):
 	fl.rotate_wheel(delta, wheel_state.total_movement_front, steering)

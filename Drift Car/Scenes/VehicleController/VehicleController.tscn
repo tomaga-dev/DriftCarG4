@@ -56,11 +56,13 @@ kp = 1500.0
 
 [node name="GripController" parent="." instance=ExtResource("2_o5eeo")]
 kp = 1000.0
-ki = 10.0
+ki = 30.0
+kd = 400.0
 
 [node name="OmegaController" parent="." instance=ExtResource("2_o5eeo")]
 kp = 50000.0
 ki = 10000.0
+kd = 10000.0
 
 [node name="GearBox" parent="." instance=ExtResource("6_nsme3")]
 

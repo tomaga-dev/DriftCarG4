@@ -28,7 +28,6 @@ func _process(_delta):
 	var omega_reference = car.omega_reference
 	var omega_measurement = car.angular_velocity.y
 	var drift_angle = car.vehicle_state.drift_angle_measurement
-	var countersteering = car.driver.did_counter_steer
 	var cornering_left = car.is_cornering_left
 	var cornering_right = car.is_cornering_right
 	var format = "FPS: %2.0f"
@@ -42,8 +41,7 @@ func _process(_delta):
 	format += "Grip Force: %.1f N\n\n"
 	format += "Omega: %.1f (ref: %.1f)\n"
 	format += "Drift-Angle: %3.0f\n\n"
-	format += "Countersteering: %s\n"
 	format += "Left: %s\nRight: %s\n"
-	status_text = format % [acceleration, force, velocity_sideways, velocity_rear_axis, gear, grip, grip_force, omega_measurement, omega_reference, rad_to_deg(drift_angle), countersteering, cornering_left, cornering_right]
+	status_text = format % [acceleration, force, velocity_sideways, velocity_rear_axis, gear, grip, grip_force, omega_measurement, omega_reference, rad_to_deg(drift_angle), cornering_left, cornering_right]
 	debug_label.text = status_text
 	
