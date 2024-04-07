@@ -47,8 +47,7 @@ var turn_radius: float
 var velocity_measurement: float
 var acceleration_measurement: float
 var acceleration_force: float
-var is_cornering_left: bool
-var is_cornering_right: bool
+var is_cornering: bool
 var rev_normalized: float
 var rev: float
 
@@ -76,6 +75,7 @@ func _physics_process(delta: float):
 	sound_emitter.update_motor_sound(self)
 	emit_signal("query_driver", self, rev_normalized)
 	if !on_ground:
+		has_grip = false
 		grip_force = steering_controller.reset()
 		drift_controller.reset()
 		grip_controller.reset()
@@ -89,28 +89,25 @@ func _physics_process(delta: float):
 	var steering: float = vehicle_state.drift_angle_measurement
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
 	if driver.did_accelerate:
-		if driver.did_steer_left:
-			if is_cornering_left:
-				has_grip = false
-		else: if driver.did_steer_right:
-			if is_cornering_right:
+		if driver.did_steer_left || driver.did_steer_right:
+			if is_cornering:
 				has_grip = false
 		else:
 			if vehicle_state.drift_angle_measurement > deg_to_rad(-max_grip_angle_degree) && vehicle_state.drift_angle_measurement < deg_to_rad(max_grip_angle_degree):
 				has_grip = true
+				is_cornering = false
 	else:
 		if driver.did_steer_left:
-			is_cornering_left = true
+			is_cornering = true
 		else: if driver.did_steer_right:
-			is_cornering_right = true
+			is_cornering = true
 		else:
-			is_cornering_left = false
-			is_cornering_right = false
+			is_cornering = false
 	if has_grip:
 		drift_controller.reset()
 		grip_controller.reset()
 		steering = asin(wheelbase / turn_radius)
-		control_omega(delta, vehicle_velocity_magnitude)
+		control_omega(delta, vehicle_velocity_magnitude, omega_max, 2)
 		apply_steering_force(vehicle_rotation)
 	else:
 		steering_controller.reset()
@@ -119,7 +116,7 @@ func _physics_process(delta: float):
 		else:
 			drift_controller.reset()
 			grip_force = grip_controller.reset()
-			control_omega(delta, vehicle_velocity_magnitude)
+			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 3)
 	if driver.did_accelerate:
 		accelerate()
 		if vehicle_state.velocity_rear_axis < vmax_wheel_spin:
@@ -136,14 +133,14 @@ func _physics_process(delta: float):
 	wheel_state.update(delta, vehicle_state.velocity_front_axis, vehicle_state.velocity_rear_axis)
 	update_wheel_rotation(delta, steering)
 
-func control_omega(delta: float, velocity: float):
+func control_omega(delta: float, velocity: float, omega_wanted: float, time_factor: float):
 	var value: float = omega_curve.sample(velocity)
 	if driver.did_steer_left:
-		omega_reference = lerp(omega_reference, omega_max * value, 2 * delta)
+		omega_reference = lerp(omega_reference, omega_wanted * value, time_factor * delta)
 	else: if driver.did_steer_right:
-		omega_reference = lerp(omega_reference, -omega_max * value, 2 * delta)
+		omega_reference = lerp(omega_reference, -omega_wanted * value, time_factor * delta)
 	else:
-		omega_reference = lerp(omega_reference, 0.0, 2 * delta)
+		omega_reference = 0
 
 func apply_steering_force(vehicle_rotation: Quaternion):
 	if !vehicle_state.vehicle_moving_forward:
@@ -155,21 +152,18 @@ func apply_steering_force(vehicle_rotation: Quaternion):
 	apply_force(grip_force_vector, offset_drive)
 
 func adjust_cornering(delta: float, vehicle_rotation: Quaternion):
-	if omega_reference > -omega_max && omega_reference < omega_max:
-		is_cornering_left = false
-		is_cornering_right = false
 	if driver.did_steer_left:
-		if is_cornering_right:
+		if omega_reference < 0:
 			omega_reference = lerp(omega_reference, omega_max_drift, 0.5 * delta)
 		else:
 			omega_reference = lerp(omega_reference, omega_max_drift, 5 * delta)
 	else: if driver.did_steer_right:
-		if is_cornering_left:
+		if omega_reference > 0:
 			omega_reference = lerp(omega_reference, -omega_max_drift, 0.5 * delta)
 		else:
 			omega_reference = lerp(omega_reference, -omega_max_drift, 5 * delta)
 	else:
-		if !is_cornering_left && !is_cornering_right:
+		if !is_cornering:
 			omega_reference = lerp(omega_reference, 0.0, 5 * delta)
 	apply_drift_force(vehicle_rotation)
 
