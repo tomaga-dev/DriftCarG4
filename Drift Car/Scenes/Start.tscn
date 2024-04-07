@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bmddi06hputur"]
+[gd_scene load_steps=25 format=3 uid="uid://bmddi06hputur"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -52,9 +52,11 @@ size = Vector3(10, 100, 500)
 custom_solver_bias = 1.0
 size = Vector3(10, 100, 500)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nyvux"]
-radius = 0.2
-height = 1.9
+[sub_resource type="BoxShape3D" id="BoxShape3D_x1cas"]
+size = Vector3(1.8, 0.2, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ur7gn"]
+size = Vector3(1.8, 0.5, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5lcbe"]
 size = Vector3(2, 0.3, 2)
@@ -160,13 +162,19 @@ shape = SubResource("BoxShape3D_37nhg")
 
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+max_force = 30000.0
+omega_max_drift = 1.2
 
 [node name="CameraTarget" type="Node3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
 
 [node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0.03, -2)
-shape = SubResource("CapsuleShape3D_nyvux")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+shape = SubResource("BoxShape3D_x1cas")
+
+[node name="CollisionShapeRear" type="CollisionShape3D" parent="Monteri"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
+shape = SubResource("BoxShape3D_ur7gn")
 
 [node name="CollisionShapeBody" type="CollisionShape3D" parent="Monteri"]
 shape = SubResource("BoxShape3D_5lcbe")
