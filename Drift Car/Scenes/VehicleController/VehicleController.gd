@@ -7,6 +7,7 @@ signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 @export var max_force: float = 20000
 @export var rev_min: float = 1
 @export var rev_multiplier: float = 5 # Higher values result in higher revs.
+@export var rev_normalized_max: float = 1
 @export var shift_time: int = 20 # in physics steps (20/60 = 1/3 seconds)
 @export var vmax_wheel_spin: float = 6
 @export var force_curve: Curve
@@ -62,7 +63,7 @@ func _ready():
 	rr.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
 	gearbox.gear_shift_time = shift_time
 	gearbox.set_force_limits(max_force)
-	motor.rev_normalized_max = 0.7
+	motor.rev_normalized_max = rev_normalized_max
 
 func _physics_process(delta: float):
 	var torque: float
@@ -97,9 +98,7 @@ func _physics_process(delta: float):
 				has_grip = true
 				is_cornering = false
 	else:
-		if driver.did_steer_left:
-			is_cornering = true
-		else: if driver.did_steer_right:
+		if driver.did_steer_left || driver.did_steer_right:
 			is_cornering = true
 		else:
 			is_cornering = false
@@ -112,11 +111,13 @@ func _physics_process(delta: float):
 	else:
 		steering_controller.reset()
 		if driver.did_accelerate:
-			adjust_cornering(delta, vehicle_rotation)
+			adjust_cornering(delta)
+			apply_drift_force(vehicle_rotation)
 		else:
 			drift_controller.reset()
 			grip_force = grip_controller.reset()
 			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 3)
+			apply_drift_force(vehicle_rotation)
 	if driver.did_accelerate:
 		accelerate()
 		if vehicle_state.velocity_rear_axis < vmax_wheel_spin:
@@ -140,7 +141,7 @@ func control_omega(delta: float, velocity: float, omega_wanted: float, time_fact
 	else: if driver.did_steer_right:
 		omega_reference = lerp(omega_reference, -omega_wanted * value, time_factor * delta)
 	else:
-		omega_reference = 0
+		omega_reference = lerp(omega_reference, 0.0, 9 * delta)
 
 func apply_steering_force(vehicle_rotation: Quaternion):
 	if !vehicle_state.vehicle_moving_forward:
@@ -151,7 +152,7 @@ func apply_steering_force(vehicle_rotation: Quaternion):
 	var grip_force_vector: Vector3 = direction * grip_force
 	apply_force(grip_force_vector, offset_drive)
 
-func adjust_cornering(delta: float, vehicle_rotation: Quaternion):
+func adjust_cornering(delta: float):
 	if driver.did_steer_left:
 		if omega_reference < 0:
 			omega_reference = lerp(omega_reference, omega_max_drift, 0.5 * delta)
@@ -165,13 +166,8 @@ func adjust_cornering(delta: float, vehicle_rotation: Quaternion):
 	else:
 		if !is_cornering:
 			omega_reference = lerp(omega_reference, 0.0, 5 * delta)
-	apply_drift_force(vehicle_rotation)
 
 func apply_drift_force(vehicle_rotation: Quaternion):
-	if !driver.did_accelerate:
-		drift_controller.reset()
-		grip_force = grip_controller.reset()
-		return
 	if !vehicle_state.vehicle_moving_forward:
 		drift_controller.reset()
 		grip_force = grip_controller.reset()

@@ -163,6 +163,7 @@ shape = SubResource("BoxShape3D_37nhg")
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 max_force = 30000.0
+rev_normalized_max = 0.7
 omega_max_drift = 1.2
 
 [node name="CameraTarget" type="Node3D" parent="Monteri"]
