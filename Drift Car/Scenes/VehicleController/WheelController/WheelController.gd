@@ -77,6 +77,8 @@ func rotate_wheel(delta: float, distance_moved: float, steering_angle: float):
 		steering_rotation = steering_rotation.slerp(wanted_steering_rotation, 6 * delta)
 		steering_rotation = steering_rotation.normalized()
 	else:
-		steering_rotation = Quaternion(Vector3.UP, steering_angle)
+		wanted_steering_rotation = Quaternion(Vector3.UP, steering_angle)
+		steering_rotation = steering_rotation.slerp(wanted_steering_rotation, 6 * delta)
+		steering_rotation = steering_rotation.normalized()
 	var wheel_rotation = steering_rotation * camber_rotation * movement_rotation
 	wheel.transform.basis = Basis(wheel_rotation)

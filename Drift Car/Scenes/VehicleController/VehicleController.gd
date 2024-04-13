@@ -116,6 +116,7 @@ func _physics_process(delta: float):
 		else:
 			drift_controller.reset()
 			grip_force = grip_controller.reset()
+			steering = asin(wheelbase / turn_radius)
 			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 3)
 			apply_drift_force(vehicle_rotation)
 	if driver.did_accelerate:
