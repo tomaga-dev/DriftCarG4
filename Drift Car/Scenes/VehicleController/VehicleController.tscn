@@ -64,6 +64,10 @@ kp = 50000.0
 ki = 10000.0
 kd = 10000.0
 
+[node name="AntiRollController" parent="." instance=ExtResource("2_o5eeo")]
+kp = 90000.0
+ki = 9000.0
+
 [node name="GearBox" parent="." instance=ExtResource("6_nsme3")]
 
 [node name="Driver" parent="." instance=ExtResource("7_lkqjy")]

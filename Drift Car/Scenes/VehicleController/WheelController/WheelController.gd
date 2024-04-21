@@ -40,7 +40,7 @@ func init_suspension(rest_force: float, arg_spring_distance_max_in: float, arg_s
 	spring_distance = 0
 	spring_rest_position = rest_force / spring_constant
 
-func add_spring_force(delta: float, vehicle_body: RigidBody3D, vehicle_rotation: Quaternion) -> bool:
+func add_spring_force(delta: float, vehicle_body: RigidBody3D, anti_roll_force: float, vehicle_rotation: Quaternion) -> bool:
 	var has_contact: bool = ray.is_colliding()
 	var stiffness_factor: float = 1
 	if has_contact:
@@ -53,6 +53,7 @@ func add_spring_force(delta: float, vehicle_body: RigidBody3D, vehicle_rotation:
 			var arg: float = spring_distance / spring_distance_max_in
 			stiffness_factor = spring_stiffness_curve.sample(arg)
 		spring_force = stiffness_factor * spring_constant * (spring_distance + spring_rest_position) # Hooke's Law
+		spring_force += anti_roll_force
 		var damping_force: float = spring_damping * spring_velocity
 		force = Vector3(0, spring_force + damping_force, 0)
 		offset = vehicle_rotation * contact_point_vehicle

@@ -24,6 +24,7 @@ signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 @onready var drift_controller = get_node("DriftController")
 @onready var grip_controller = get_node("GripController")
 @onready var omega_controller: Node = get_node("OmegaController")
+@onready var anti_roll_controller: Node = get_node("AntiRollController")
 @onready var gearbox: Node = get_node("GearBox")
 @onready var motor: Node = get_node("Motor")
 @onready var driver: Node = get_node("Driver")
@@ -234,10 +235,12 @@ func get_turn_radius(vehicle_velocity_magnitude: float) -> float:
 func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 	var contact_front: bool
 	var contact_rear: bool
-	contact_front = fl.add_spring_force(delta, self, vehicle_rotation)
-	contact_front = fr.add_spring_force(delta, self, vehicle_rotation) && contact_front
-	contact_rear = rl.add_spring_force(delta, self, vehicle_rotation)
-	contact_rear = rr.add_spring_force(delta, self, vehicle_rotation) && contact_rear
+	var front_rolling_measurement: float = fl.spring_distance - fr.spring_distance
+	var anti_roll_force: float = anti_roll_controller.adjust(0, front_rolling_measurement)
+	contact_front = fl.add_spring_force(delta, self, -anti_roll_force, vehicle_rotation)
+	contact_front = fr.add_spring_force(delta, self, anti_roll_force, vehicle_rotation) && contact_front
+	contact_rear = rl.add_spring_force(delta, self, 0, vehicle_rotation)
+	contact_rear = rr.add_spring_force(delta, self, 0, vehicle_rotation) && contact_rear
 	return contact_front && contact_rear
 
 class VehicleState:
