@@ -4,6 +4,7 @@ extends Camera3D
 @export var first_person: bool = false
 @export var third_person: bool = true
 @export var race_mode: bool = true
+@export var auto_rotate_mode: bool = true
 @export var damping: float = 1
 
 var target: Node3D
@@ -40,6 +41,10 @@ func first_person_view():
 
 func follow():
 	var camera_rotation = Quaternion(transform.basis)
+	if auto_rotate_mode:
+		y_rotation *= Quaternion(Vector3.UP, deg_to_rad(0.3))
+		camera_rotation = z_rotation * y_rotation * x_rotation
+		transform.basis = Basis(camera_rotation)
 	transform.origin = target.global_transform.origin - camera_rotation * Vector3.FORWARD * distance_magnitude
 
 func smooth_follow(delta: float):
@@ -64,7 +69,22 @@ func get_velocity_rotation() -> Quaternion:
 	return velocity_rotation
 
 func get_vehicle_rotation() -> Quaternion:
-	var vehicle_direction: Vector3 = vehicle_controller.vehicle_state.vehicle_direction
-	var vehicle_rotation: Quaternion = Quaternion(Vector3.FORWARD, vehicle_direction)
-	vehicle_rotation = vehicle_rotation.normalized()
-	return vehicle_rotation
+	return Quaternion(target.global_transform.basis)
+
+func switch_first_person():
+		auto_rotate_mode = true
+		vehicle_controller.visible = false
+		first_person = true
+		third_person = false
+
+func switch_third_person():
+		auto_rotate_mode = true
+		vehicle_controller.visible = true
+		first_person = false
+		third_person = true
+
+func switch_third_person_fixed():
+		vehicle_controller.visible = true
+		first_person = false
+		third_person = false
+
