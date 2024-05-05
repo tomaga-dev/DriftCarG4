@@ -2,9 +2,10 @@ extends RigidBody3D
 
 class_name VehicleController
 
-signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
+signal query_driver(vehicle: VehicleController, rev_normalized: float)
 
 @export var max_force: float = 20000
+@export var boost_factor: float = 1.5
 @export var rev_min: float = 1
 @export var rev_multiplier: float = 5 # Higher values result in higher revs.
 @export var rev_normalized_max: float = 1
@@ -12,7 +13,7 @@ signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 @export var vmax_wheel_spin: float = 6
 @export var force_curve: Curve
 @export var omega_curve: Curve
-@export var omega_max: float = 0.5
+@export var omega_max: float = 0.3
 @export var omega_max_drift: float = 0.9
 @export var spring_distance_max_in: float = 0.07
 @export var spring_distance_max_out: float = 0.14
@@ -20,9 +21,9 @@ signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 @export var spring_constant: float = 42214
 @export var spring_damping: float = 7904
 
+@onready var tail_lights_controller: Node = get_node("TailLightsController")
 @onready var steering_controller: Node = get_node("SteeringController")
 @onready var drift_controller = get_node("DriftController")
-@onready var grip_controller = get_node("GripController")
 @onready var omega_controller: Node = get_node("OmegaController")
 @onready var anti_roll_controller: Node = get_node("AntiRollController")
 @onready var gearbox: Node = get_node("GearBox")
@@ -36,7 +37,6 @@ signal query_driver(car_of_driver: VehicleController, rev_normalized: float)
 
 var vehicle_state = VehicleState.new()
 var wheel_state = WheelState.new()
-var max_grip_angle_degree: float = 1
 var brake_value: float = 20000
 var on_ground: bool = false
 var has_grip: bool = false
@@ -46,12 +46,16 @@ var offset_drive: Vector3
 var omega_reference: float
 var wheelbase: float
 var turn_radius: float
+var front_rolling_measurement: float
+var anti_roll_force: float
 var velocity_measurement: float
 var acceleration_measurement: float
 var acceleration_force: float
 var is_cornering: bool
 var rev_normalized: float
 var rev: float
+var apply_boost: bool
+var current_force: float
 
 
 func _ready():
@@ -71,31 +75,33 @@ func _physics_process(delta: float):
 	var torque_vector: Vector3
 	var vehicle_velocity_magnitude: float = linear_velocity.length()
 	var vehicle_rotation = Quaternion(transform.basis)
+	vehicle_state.update(vehicle_rotation, linear_velocity)
+	var steering: float = vehicle_state.drift_angle_measurement
+	apply_boost = false
+	current_force = 0
 	on_ground = update_suspension(delta, vehicle_rotation)
 	rev_normalized = motor.update_state(self)
 	rev = rev_normalized * rev_multiplier
 	sound_emitter.update_motor_sound(self)
 	emit_signal("query_driver", self, rev_normalized)
+	tail_lights_controller.show_brake_light(false)
 	if !on_ground:
 		has_grip = false
 		grip_force = steering_controller.reset()
 		drift_controller.reset()
-		grip_controller.reset()
 		omega_controller.reset()
 		return
-	offset_drive = vehicle_rotation * driving_force_position
-	vehicle_state.update(vehicle_rotation, linear_velocity)
+	offset_drive = to_global(driving_force_position) - transform.origin
 	acceleration_measurement = (vehicle_velocity_magnitude - velocity_measurement) / delta
 	velocity_measurement = vehicle_velocity_magnitude
 	gearbox.select_gear(vehicle_velocity_magnitude, driver.did_accelerate)
-	var steering: float = vehicle_state.drift_angle_measurement
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
 	if driver.did_accelerate:
 		if driver.did_steer_left || driver.did_steer_right:
 			if is_cornering:
 				has_grip = false
 		else:
-			if vehicle_state.drift_angle_measurement > deg_to_rad(-max_grip_angle_degree) && vehicle_state.drift_angle_measurement < deg_to_rad(max_grip_angle_degree):
+			if is_drift_agle_below(deg_to_rad(1)):
 				has_grip = true
 				is_cornering = false
 	else:
@@ -103,9 +109,10 @@ func _physics_process(delta: float):
 			is_cornering = true
 		else:
 			is_cornering = false
+			if is_drift_agle_below(deg_to_rad(9)) || is_zero_approx(omega_reference):
+				has_grip = true
 	if has_grip:
 		drift_controller.reset()
-		grip_controller.reset()
 		steering = asin(wheelbase / turn_radius)
 		control_omega(delta, vehicle_velocity_magnitude, omega_max, 2)
 		apply_steering_force(vehicle_rotation)
@@ -116,10 +123,10 @@ func _physics_process(delta: float):
 			apply_drift_force(vehicle_rotation)
 		else:
 			drift_controller.reset()
-			grip_force = grip_controller.reset()
+			grip_force = 0
 			steering = asin(wheelbase / turn_radius)
-			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 3)
-			apply_drift_force(vehicle_rotation)
+			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 5)
+			apply_steering_force(vehicle_rotation)
 	if driver.did_accelerate:
 		accelerate()
 		if vehicle_state.velocity_rear_axis < vmax_wheel_spin:
@@ -135,6 +142,11 @@ func _physics_process(delta: float):
 	apply_torque(torque_vector)
 	wheel_state.update(delta, vehicle_state.velocity_front_axis, vehicle_state.velocity_rear_axis)
 	update_wheel_rotation(delta, steering)
+
+func is_drift_agle_below(angle: float):
+	if vehicle_state.drift_angle_measurement > -angle && vehicle_state.drift_angle_measurement < angle:
+		return true
+	return false
 
 func control_omega(delta: float, velocity: float, omega_wanted: float, time_factor: float):
 	var value: float = omega_curve.sample(velocity)
@@ -155,31 +167,29 @@ func apply_steering_force(vehicle_rotation: Quaternion):
 	apply_force(grip_force_vector, offset_drive)
 
 func adjust_cornering(delta: float):
+	apply_boost = true
 	if driver.did_steer_left:
-		if omega_reference < 0:
-			omega_reference = lerp(omega_reference, omega_max_drift, 0.5 * delta)
+		if omega_reference < 0: # countersteer
+			omega_reference = lerp(omega_reference, omega_max_drift, 1.2 * delta)
 		else:
-			omega_reference = lerp(omega_reference, omega_max_drift, 5 * delta)
+			omega_reference = lerp(omega_reference, omega_max_drift, 8 * delta)
 	else: if driver.did_steer_right:
-		if omega_reference > 0:
-			omega_reference = lerp(omega_reference, -omega_max_drift, 0.5 * delta)
+		if omega_reference > 0: # countersteer
+			omega_reference = lerp(omega_reference, -omega_max_drift, 1.2 * delta)
 		else:
-			omega_reference = lerp(omega_reference, -omega_max_drift, 5 * delta)
+			omega_reference = lerp(omega_reference, -omega_max_drift, 8 * delta)
 	else:
-		if !is_cornering:
-			omega_reference = lerp(omega_reference, 0.0, 5 * delta)
+		if is_cornering:
+			omega_reference = lerp(omega_reference, 0.0, 0.1 * delta)
+		else:
+			omega_reference = 0
 
 func apply_drift_force(vehicle_rotation: Quaternion):
 	if !vehicle_state.vehicle_moving_forward:
 		drift_controller.reset()
-		grip_force = grip_controller.reset()
-		return
-	if is_zero_approx(omega_reference):
-		grip_force = grip_controller.adjust(0, vehicle_state.velocity_sideways)
-		drift_controller.reset()
+		grip_force = 0
 	else:
 		grip_force = drift_controller.adjust(0, vehicle_state.velocity_sideways)
-		grip_controller.reset()
 	var direction: Vector3 = vehicle_rotation * Vector3.LEFT
 	var grip_force_vector: Vector3 = direction * grip_force
 	apply_force(grip_force_vector, offset_drive)
@@ -195,6 +205,9 @@ func accelerate():
 		return
 	var vmax: float = gearbox.get_vmax()
 	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.sample(velocity_measurement / vmax)
+	if apply_boost:
+		acceleration_force *= boost_factor
+	current_force = acceleration_force
 	var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 	apply_force(force_vector, offset_drive)
 
@@ -214,20 +227,21 @@ func brake(vehicle_velocity_magnitude: float):
 	else:
 		brake_force = brake_value * linear_velocity
 	apply_force(-brake_force, offset_drive)
+	tail_lights_controller.show_brake_light(true)
 
 func get_turn_radius(vehicle_velocity_magnitude: float) -> float:
 	var radius: float
 	var radius_min: float = 1.1 * wheelbase
-	if angular_velocity.y > 0:
-		radius = min(999, vehicle_velocity_magnitude / angular_velocity.y)
-		if radius < radius_min:
-			radius = radius_min
-	else: if angular_velocity.y < 0:
-		radius = max(-999, vehicle_velocity_magnitude / angular_velocity.y)
-		if radius > -radius_min:
-			radius = -radius_min
-	else:
-		radius = 999
+	radius = 999
+	if vehicle_velocity_magnitude > 0.05:
+		if angular_velocity.y > 0:
+			radius = min(999, vehicle_velocity_magnitude / angular_velocity.y)
+			if radius < radius_min:
+				radius = radius_min
+		else: if angular_velocity.y < 0:
+			radius = max(-999, vehicle_velocity_magnitude / angular_velocity.y)
+			if radius > -radius_min:
+				radius = -radius_min
 	if radius > -radius_min && radius < radius_min:
 		print_debug("turn radius?")
 	return radius
@@ -235,8 +249,8 @@ func get_turn_radius(vehicle_velocity_magnitude: float) -> float:
 func update_suspension(delta: float, vehicle_rotation: Quaternion) -> bool:
 	var contact_front: bool
 	var contact_rear: bool
-	var front_rolling_measurement: float = fl.spring_distance - fr.spring_distance
-	var anti_roll_force: float = anti_roll_controller.adjust(0, front_rolling_measurement)
+	front_rolling_measurement = fl.spring_distance - fr.spring_distance
+	anti_roll_force = anti_roll_controller.adjust(0, front_rolling_measurement)
 	contact_front = fl.add_spring_force(delta, self, -anti_roll_force, vehicle_rotation)
 	contact_front = fr.add_spring_force(delta, self, anti_roll_force, vehicle_rotation) && contact_front
 	contact_rear = rl.add_spring_force(delta, self, 0, vehicle_rotation)
