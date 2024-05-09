@@ -2,7 +2,7 @@ extends RigidBody3D
 
 class_name VehicleController
 
-signal query_driver(vehicle: VehicleController, rev_normalized: float)
+signal query_driver(vehicle: VehicleController)
 
 @export var max_force: float = 20000
 @export var boost_factor: float = 1.5
@@ -27,8 +27,8 @@ signal query_driver(vehicle: VehicleController, rev_normalized: float)
 @onready var omega_controller: Node = get_node("OmegaController")
 @onready var anti_roll_controller: Node = get_node("AntiRollController")
 @onready var gearbox: Node = get_node("GearBox")
-@onready var motor: Node = get_node("Motor")
 @onready var driver: Node = get_node("Driver")
+@onready var motor: Node = get_node("Motor")
 @onready var fl: WheelController = get_node("FL")
 @onready var fr: WheelController = get_node("FR")
 @onready var rl: WheelController = get_node("RL")
@@ -37,6 +37,7 @@ signal query_driver(vehicle: VehicleController, rev_normalized: float)
 
 var vehicle_state = VehicleState.new()
 var wheel_state = WheelState.new()
+var controlled_by_player: bool = false
 var brake_value: float = 20000
 var on_ground: bool = false
 var has_grip: bool = false
@@ -83,7 +84,8 @@ func _physics_process(delta: float):
 	rev_normalized = motor.update_state(self)
 	rev = rev_normalized * rev_multiplier
 	sound_emitter.update_motor_sound(self)
-	emit_signal("query_driver", self, rev_normalized)
+	if controlled_by_player:
+		emit_signal("query_driver", self)
 	tail_lights_controller.show_brake_light(false)
 	if !on_ground:
 		has_grip = false
