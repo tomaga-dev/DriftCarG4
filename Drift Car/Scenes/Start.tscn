@@ -71,15 +71,12 @@ player_node = NodePath("Player")
 [node name="Player" type="Node" parent="."]
 script = ExtResource("2_g27tf")
 car_node = NodePath("../Monteri")
-needle_node = NodePath("../Dashboard/TextureRect2")
-gear_node = NodePath("../Dashboard/Gear")
-speed_node = NodePath("../Dashboard/Speed")
 
 [node name="Status" parent="." instance=ExtResource("6_limtv")]
 
 [node name="Dashboard" parent="." instance=ExtResource("4_a1ewv")]
 
-[node name="TextureRect2" type="TextureRect" parent="Dashboard"]
+[node name="Needle" type="TextureRect" parent="Dashboard"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -134,11 +131,18 @@ shadow_enabled = true
 environment = SubResource("Environment_e3rv3")
 
 [node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(0.664555, 0.143163, -0.733397, 0, 0.981476, 0.191589, 0.74724, -0.127321, 0.652245, -5.42986, 2.63843, 4.82904)
 fov = 40.0
 script = ExtResource("3_wjqso")
-vehicle_node = NodePath("../Monteri")
 damping = 3.0
+vehicle_node = NodePath("../Monteri")
+needle_node = NodePath("../Dashboard/Needle")
+gear_node = NodePath("../Dashboard/Gear")
+speed_node = NodePath("../Dashboard/Speed")
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="Camera"]
+update_mode = 1
+max_distance = 30.0
+size = Vector3(200, 80, 200)
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
@@ -161,13 +165,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -255, 0, 0)
 shape = SubResource("BoxShape3D_37nhg")
 
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 38.963)
 max_force = 30000.0
 rev_normalized_max = 0.7
 omega_max_drift = 1.4
 
 [node name="CameraTarget" type="Node3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+
+[node name="CameraOrigin" type="Node3D" parent="Monteri"]
+transform = Transform3D(1, 0, 0, 0, 0.994522, 0.104528, 0, -0.104528, 0.994522, 0, 0.87, 8)
 
 [node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
@@ -194,9 +201,6 @@ bus = &"On"
 [node name="Deceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter"]
 stream = ExtResource("9_dqhyg")
 bus = &"Off"
-
-[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
-size = Vector3(500, 100, 500)
 
 [node name="ArcBridge" parent="." instance=ExtResource("10_3acnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)

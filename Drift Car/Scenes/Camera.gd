@@ -1,13 +1,24 @@
 extends Camera3D
 
-@export var vehicle_node: NodePath
 @export var first_person: bool = false
 @export var third_person: bool = true
 @export var race_mode: bool = true
 @export var auto_rotate_mode: bool = true
 @export var damping: float = 1
+@export var vehicle_node: NodePath
+@export var rev_min: float = 0.8
+@export var rev_max: float = 9
+@export var needle_node: NodePath
+@export var gear_node: NodePath
+@export var speed_node: NodePath
 
+var needle: TextureRect
+var gear: Label
+var speed: Label
+var m: float
+var b: float
 var target: Node3D
+var origin: Node3D
 var vehicle_controller: VehicleController
 var distance_measured: Vector3
 var distance_magnitude: float
@@ -17,7 +28,16 @@ var z_rotation: Quaternion
 
 func _ready():
 	vehicle_controller = get_node(vehicle_node)
+	needle = get_node(needle_node)
+	gear = get_node(gear_node)
+	speed = get_node(speed_node)
+	var k = 0.5 * PI + PI
+	m = (rev_max - rev_min) / rev_max * k
+	b = rev_min / rev_max * k
 	target = vehicle_controller.get_node("CameraTarget")
+	origin = vehicle_controller.get_node("CameraOrigin")
+	transform.origin = origin.global_position
+	transform.basis = Basis(origin.quaternion)
 	vehicle_controller.visible = !first_person
 	distance_measured = target.global_transform.origin - global_transform.origin
 	distance_magnitude = distance_measured.length()
@@ -33,6 +53,10 @@ func _physics_process(delta: float):
 		smooth_follow(delta)
 	else:
 		follow()
+	var kmh: float = 3.6 * vehicle_controller.linear_velocity.length()
+	needle.rotation = -PI + m * vehicle_controller.rev_normalized + b
+	gear.text = "%s" % vehicle_controller.gearbox.gear
+	speed.text = "%3.0f km/h" % kmh
 
 func first_person_view():
 	var camera_global_rotation = Quaternion(target.global_transform.basis)
@@ -87,4 +111,3 @@ func switch_third_person_fixed():
 		vehicle_controller.visible = true
 		first_person = false
 		third_person = false
-
