@@ -35,8 +35,7 @@ tonemap_mode = 3
 fog_light_color = Color(0, 0.619608, 1, 1)
 fog_sky_affect = 0.0
 volumetric_fog_enabled = true
-volumetric_fog_anisotropy = -0.11
-volumetric_fog_detail_spread = 0.5
+volumetric_fog_anisotropy = -0.2
 volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
@@ -125,6 +124,7 @@ text = "999"
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.986286, 0.10609, -0.126433, 0, 0.766045, 0.642788, 0.165047, 0.633972, -0.755538, -20.3359, 103.738, -121.523)
 light_energy = 0.7
+light_volumetric_fog_energy = 3.0
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -138,11 +138,6 @@ vehicle_node = NodePath("../Monteri")
 needle_node = NodePath("../Dashboard/Needle")
 gear_node = NodePath("../Dashboard/Gear")
 speed_node = NodePath("../Dashboard/Speed")
-
-[node name="ReflectionProbe" type="ReflectionProbe" parent="Camera"]
-update_mode = 1
-max_distance = 30.0
-size = Vector3(200, 80, 200)
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
@@ -204,5 +199,9 @@ bus = &"Off"
 
 [node name="ArcBridge" parent="." instance=ExtResource("10_3acnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
+size = Vector3(500, 100, 500)
+interior = true
 
 [connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
