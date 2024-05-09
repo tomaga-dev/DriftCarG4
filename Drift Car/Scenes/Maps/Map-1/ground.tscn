@@ -1,15 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://byrafxeh8fmo7"]
+[gd_scene load_steps=6 format=3 uid="uid://byrafxeh8fmo7"]
 
 [ext_resource type="PackedScene" uid="uid://bw77gq14v3wob" path="res://Scenes/Maps/Map-1/Ground.glb" id="1_gc3wy"]
 [ext_resource type="Texture2D" uid="uid://bee33hnruop2q" path="res://Scenes/Maps/Map-1/Ground_0.png" id="2_eqra7"]
 [ext_resource type="Texture2D" uid="uid://beprj3bpjx2im" path="res://Scenes/Maps/Map-1/Grid_A.png" id="3_6k2xw"]
 [ext_resource type="Texture2D" uid="uid://cfs1uyg42nlll" path="res://Scenes/Maps/Map-1/Grid_H.png" id="4_7n8yn"]
-[ext_resource type="Texture2D" uid="uid://dxwddp6qjftri" path="res://Scenes/Maps/Map-1/Grid_R.png" id="5_jr0pj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wa83h"]
 albedo_texture = ExtResource("2_eqra7")
-roughness = 0.27
-roughness_texture = ExtResource("5_jr0pj")
+metallic_specular = 0.0
 ao_enabled = true
 ao_light_affect = 0.35
 ao_texture = ExtResource("3_6k2xw")
