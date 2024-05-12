@@ -31,10 +31,12 @@ background_mode = 2
 sky = SubResource("Sky_wbhdn")
 ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
 ambient_light_sky_contribution = 0.1
+ambient_light_energy = 0.2
 tonemap_mode = 3
 fog_light_color = Color(0, 0.619608, 1, 1)
 fog_sky_affect = 0.0
 volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
 volumetric_fog_anisotropy = -0.2
 volumetric_fog_sky_affect = 0.0
 
@@ -202,6 +204,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 size = Vector3(500, 100, 500)
-interior = true
+ambient_mode = 0
 
 [connection signal="query_driver" from="Monteri" to="Player" method="_on_monteri_query_driver"]
