@@ -5,7 +5,7 @@ class_name VehicleController
 signal query_driver(vehicle: VehicleController)
 
 @export var max_force: float = 20000
-@export var boost_factor: float = 1.5
+@export var boost_factor: float = 1.7
 @export var rev_min: float = 1
 @export var rev_multiplier: float = 5 # Higher values result in higher revs.
 @export var rev_normalized_max: float = 1
@@ -13,8 +13,8 @@ signal query_driver(vehicle: VehicleController)
 @export var vmax_wheel_spin: float = 6
 @export var force_curve: Curve
 @export var omega_curve: Curve
-@export var omega_max: float = 0.3
-@export var omega_max_drift: float = 0.9
+@export var omega_max: float = 0.6
+@export var omega_max_drift: float = 1.7
 @export var spring_distance_max_in: float = 0.07
 @export var spring_distance_max_out: float = 0.14
 # Hard spring.
@@ -103,7 +103,7 @@ func _physics_process(delta: float):
 			if is_cornering:
 				has_grip = false
 		else:
-			if is_drift_agle_below(deg_to_rad(1)):
+			if is_drift_agle_less_than(deg_to_rad(1)):
 				has_grip = true
 				is_cornering = false
 	else:
@@ -111,7 +111,7 @@ func _physics_process(delta: float):
 			is_cornering = true
 		else:
 			is_cornering = false
-			if is_drift_agle_below(deg_to_rad(9)) || is_zero_approx(omega_reference):
+			if is_drift_agle_less_than(deg_to_rad(9)):
 				has_grip = true
 	if has_grip:
 		drift_controller.reset()
@@ -145,7 +145,7 @@ func _physics_process(delta: float):
 	wheel_state.update(delta, vehicle_state.velocity_front_axis, vehicle_state.velocity_rear_axis)
 	update_wheel_rotation(delta, steering)
 
-func is_drift_agle_below(angle: float):
+func is_drift_agle_less_than(angle: float):
 	if vehicle_state.drift_angle_measurement > -angle && vehicle_state.drift_angle_measurement < angle:
 		return true
 	return false
@@ -169,17 +169,18 @@ func apply_steering_force(vehicle_rotation: Quaternion):
 	apply_force(grip_force_vector, offset_drive)
 
 func adjust_cornering(delta: float):
-	apply_boost = true
 	if driver.did_steer_left:
 		if omega_reference < 0: # countersteer
-			omega_reference = lerp(omega_reference, omega_max_drift, 1.2 * delta)
+			apply_boost = true
+			omega_reference = lerp(omega_reference, omega_max_drift, 0.9 * delta)
 		else:
-			omega_reference = lerp(omega_reference, omega_max_drift, 8 * delta)
+			omega_reference = lerp(omega_reference, omega_max_drift, 2 * delta)
 	else: if driver.did_steer_right:
 		if omega_reference > 0: # countersteer
-			omega_reference = lerp(omega_reference, -omega_max_drift, 1.2 * delta)
+			apply_boost = true
+			omega_reference = lerp(omega_reference, -omega_max_drift, 0.9 * delta)
 		else:
-			omega_reference = lerp(omega_reference, -omega_max_drift, 8 * delta)
+			omega_reference = lerp(omega_reference, -omega_max_drift, 2 * delta)
 	else:
 		if is_cornering:
 			omega_reference = lerp(omega_reference, 0.0, 0.1 * delta)
