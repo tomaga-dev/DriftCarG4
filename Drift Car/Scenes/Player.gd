@@ -12,15 +12,16 @@ func _ready():
 func get_player_input(driver):
 	if Input.is_action_pressed("controller_brake"):
 		driver.brake()
-	else:
-		if Input.is_action_pressed("controller_accelerate"):
-			driver.accelerate()
-		if Input.is_action_pressed("controller_left"):
-			driver.turn_left()
-		if Input.is_action_pressed("controller_right"):
-			driver.turn_right()
-		if Input.is_action_pressed("controller_reverse"):
-			driver.reverse()
+	if Input.is_action_pressed("controller_accelerate"):
+		driver.accelerate()
+	if Input.is_action_pressed("controller_left"):
+		driver.turn_left()
+	if Input.is_action_pressed("controller_right"):
+		driver.turn_right()
+	if Input.is_action_pressed("controller_reverse"):
+		driver.reverse()
+	if Input.is_action_pressed("controller_declutch"):
+		driver.declutch()
 
 func query_driver(vehicle: VehicleController):
 	if vehicle != car:

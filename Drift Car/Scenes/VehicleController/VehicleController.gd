@@ -93,6 +93,8 @@ func _physics_process(delta: float):
 		drift_controller.reset()
 		omega_controller.reset()
 		return
+	if driver.did_declutch:
+		return
 	offset_drive = to_global(driving_force_position) - transform.origin
 	acceleration_measurement = (vehicle_velocity_magnitude - velocity_measurement) / delta
 	velocity_measurement = vehicle_velocity_magnitude
