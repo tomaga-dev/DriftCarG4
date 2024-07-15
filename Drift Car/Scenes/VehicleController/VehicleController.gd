@@ -9,7 +9,7 @@ signal query_driver(vehicle: VehicleController)
 @export var rev_min: float = 1
 @export var rev_multiplier: float = 5 # Higher values result in higher revs.
 @export var rev_normalized_max: float = 1
-@export var shift_time: int = 20 # in physics steps (20/60 = 1/3 seconds)
+@export var shift_time_ms: int = 333 # in milliseconds
 @export var vmax_wheel_spin: float = 6
 @export var force_curve: Curve
 @export var omega_curve: Curve
@@ -67,7 +67,7 @@ func _ready():
 	fr.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
 	rl.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
 	rr.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
-	gearbox.gear_shift_time = shift_time
+	gearbox.gear_shift_time = shift_time_ms
 	gearbox.set_force_limits(max_force)
 	motor.rev_normalized_max = rev_normalized_max
 
