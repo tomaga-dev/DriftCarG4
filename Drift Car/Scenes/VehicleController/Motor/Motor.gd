@@ -37,13 +37,13 @@ func set_speed_now(car: VehicleController, v_cut_off: float, cut_off: bool, has_
 		var drift_angle: float = rad_to_deg(car.vehicle_state.drift_angle_measurement)
 		var is_drifting: bool = drift_angle < -drift_angle_max || drift_angle > drift_angle_max
 		if is_drifting || !has_grip:
-			speed_now += speed_delta
+			speed_now += speed_delta * rev_normalized_max
 		else:
 			speed_now = speed
 		if speed_now > v_cut_off && cut_off:
 			speed_now = v_cut_off
 	else:
-		speed_now -= 0.4 * speed_delta
+		speed_now -= 0.4 * speed_delta * rev_normalized_max
 		if speed_now < speed:
 			speed_now = speed
 
