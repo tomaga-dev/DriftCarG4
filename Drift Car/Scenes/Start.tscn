@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bmddi06hputur"]
+[gd_scene load_steps=26 format=3 uid="uid://bmddi06hputur"]
 
 [ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
 [ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
@@ -7,10 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://df3yv0munac4v" path="res://Scenes/RevCounterNeedle.png" id="5_jjaii"]
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
 [ext_resource type="PackedScene" uid="uid://bhqt5d5hg31xl" path="res://Scenes/Status/Status.tscn" id="6_limtv"]
-[ext_resource type="PackedScene" uid="uid://byrafxeh8fmo7" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
+[ext_resource type="PackedScene" uid="uid://c2cntd7soshmw" path="res://Scenes/Maps/Map-1/ground.tscn" id="6_w8p8v"]
 [ext_resource type="FontFile" uid="uid://p28emkvy8p7f" path="res://Scenes/Fonts/noto_sans_ui_regular.ttf" id="6_yb40h"]
 [ext_resource type="PackedScene" uid="uid://cvurpj231f18r" path="res://Scenes/sound_emitter.tscn" id="7_8r1bc"]
 [ext_resource type="AudioStream" uid="uid://coavl778ify5y" path="res://Scenes/CarModels/Monteri-Body/On.wav" id="8_5x8ta"]
+[ext_resource type="PackedScene" uid="uid://5n1sl2aphgu4" path="res://Scenes/Maps/Map-1/GuardRails/guard_rail.tscn" id="9_7gnw2"]
 [ext_resource type="AudioStream" uid="uid://6alyab3du2n5" path="res://Scenes/CarModels/Monteri-Body/Off.wav" id="9_dqhyg"]
 [ext_resource type="PackedScene" uid="uid://dq0ak78bjfpfr" path="res://Scenes/Maps/ArcBridge/arc_bridge.tscn" id="10_3acnn"]
 
@@ -36,22 +37,22 @@ tonemap_mode = 3
 fog_light_color = Color(0, 0.619608, 1, 1)
 fog_sky_affect = 0.0
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.03
+volumetric_fog_density = 0.02
 volumetric_fog_anisotropy = -0.2
 volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5xuo"]
-size = Vector3(500, 100, 10)
+size = Vector3(1000, 100, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4xdyb"]
-size = Vector3(500, 100, 10)
+size = Vector3(1000, 100, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_q02r8"]
-size = Vector3(10, 100, 500)
+size = Vector3(10, 100, 1000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_37nhg"]
 custom_solver_bias = 1.0
-size = Vector3(10, 100, 500)
+size = Vector3(10, 100, 1000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x1cas"]
 size = Vector3(1.8, 0.2, 0.5)
@@ -143,26 +144,28 @@ speed_node = NodePath("../Dashboard/Speed")
 
 [node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
 
+[node name="GuardRail" parent="." instance=ExtResource("9_7gnw2")]
+
 [node name="GroundLimits" type="StaticBody3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GroundLimits"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 255)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 505)
 shape = SubResource("BoxShape3D_y5xuo")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="GroundLimits"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -255)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -505)
 shape = SubResource("BoxShape3D_4xdyb")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="GroundLimits"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 255, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 505, 0, 0)
 shape = SubResource("BoxShape3D_q02r8")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="GroundLimits"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -255, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -505, 0, 0)
 shape = SubResource("BoxShape3D_37nhg")
 
 [node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 38.963)
+transform = Transform3D(-0.98308, 0, 0.183179, 0, 1, 0, -0.183179, 0, -0.98308, -3.73257, 0.35, -265.011)
 max_force = 30000.0
 rev_normalized_max = 0.7
 

@@ -1,21 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://byrafxeh8fmo7"]
+[gd_scene load_steps=2 format=3 uid="uid://c2cntd7soshmw"]
 
-[ext_resource type="PackedScene" uid="uid://bw77gq14v3wob" path="res://Scenes/Maps/Map-1/Ground.glb" id="1_gc3wy"]
-[ext_resource type="Texture2D" uid="uid://bee33hnruop2q" path="res://Scenes/Maps/Map-1/Ground_0.png" id="2_eqra7"]
-[ext_resource type="Texture2D" uid="uid://beprj3bpjx2im" path="res://Scenes/Maps/Map-1/Grid_A.png" id="3_6k2xw"]
-[ext_resource type="Texture2D" uid="uid://cfs1uyg42nlll" path="res://Scenes/Maps/Map-1/Grid_H.png" id="4_7n8yn"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wa83h"]
-albedo_texture = ExtResource("2_eqra7")
-metallic_specular = 0.0
-ao_enabled = true
-ao_light_affect = 0.35
-ao_texture = ExtResource("3_6k2xw")
-heightmap_enabled = true
-heightmap_scale = 16.0
-heightmap_texture = ExtResource("4_7n8yn")
+[ext_resource type="PackedScene" uid="uid://c82lesk7tdn34" path="res://Scenes/Maps/Map-1/Ground.glb" id="1_gc3wy"]
 
 [node name="Ground" instance=ExtResource("1_gc3wy")]
 
 [node name="ground" parent="." index="0"]
-surface_material_override/0 = SubResource("StandardMaterial3D_wa83h")
+cast_shadow = 0
