@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgutqoukyvi6l"]
+
+[ext_resource type="PackedScene" uid="uid://cj5cxij3d5302" path="res://Scenes/Maps/Map-1/GuardRails/Barrier.glb" id="1_kyc8d"]
+
+[node name="Barrier" instance=ExtResource("1_kyc8d")]
+
+[node name="Bumper" parent="." index="0"]
+visible = false
+
+[node name="BumperOut" parent="." index="11"]
+visible = false

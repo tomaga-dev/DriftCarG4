@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csykec2mylerd"
-path.s3tc="res://.godot/imported/Ground_0.png-fae287dcf6796535572d3fa07318c3c7.s3tc.ctex"
+uid="uid://cqjpg3ecyewlf"
+path.s3tc="res://.godot/imported/Barrier_Image_0.png-2664cc6408b2979fc3c045fa48da1e37.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://Scenes/Maps/Map-1/Ground_0.png"
-dest_files=["res://.godot/imported/Ground_0.png-fae287dcf6796535572d3fa07318c3c7.s3tc.ctex"]
+source_file="res://Scenes/Maps/Map-1/GuardRails/Barrier_Image_0.png"
+dest_files=["res://.godot/imported/Barrier_Image_0.png-2664cc6408b2979fc3c045fa48da1e37.s3tc.ctex"]
 
 [params]
 

@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2cntd7soshmw"]
+[gd_scene load_steps=2 format=3 uid="uid://bdasdyv31ad2r"]
 
-[ext_resource type="PackedScene" uid="uid://c82lesk7tdn34" path="res://Scenes/Maps/Map-1/Ground.glb" id="1_gc3wy"]
+[ext_resource type="PackedScene" uid="uid://ct6ktc8s4fvq0" path="res://Scenes/Maps/Map-1/Ground.glb" id="1_gc3wy"]
 
 [node name="Ground" instance=ExtResource("1_gc3wy")]
 
-[node name="ground" parent="." index="0"]
+[node name="Terrain" parent="." index="0"]
 cast_shadow = 0
