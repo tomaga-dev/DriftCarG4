@@ -21,22 +21,25 @@ signal query_driver(vehicle: VehicleController)
 @export var spring_constant: float = 42214
 @export var spring_damping: float = 7904
 
-@onready var tail_lights_controller: Node = get_node("TailLightsController")
-@onready var steering_controller: Node = get_node("SteeringController")
-@onready var drift_controller = get_node("DriftController")
-@onready var omega_controller: Node = get_node("OmegaController")
-@onready var anti_roll_controller: Node = get_node("AntiRollController")
-@onready var gearbox: Node = get_node("GearBox")
-@onready var driver: Node = get_node("Driver")
-@onready var motor: Node = get_node("Motor")
+@export var taillights: MeshInstance3D
+@export var taillights_material_index: int = 0
+@export var taillights_material_energy: float = 0.9
+
+@onready var steering_controller: PIDController = get_node("SteeringController")
+@onready var drift_controller: PIDController = get_node("DriftController")
+@onready var omega_controller: PIDController = get_node("OmegaController")
+@onready var anti_roll_controller: PIDController = get_node("AntiRollController")
+@onready var gearbox: GearBox = get_node("GearBox")
+@onready var driver: Driver = get_node("Driver")
+@onready var motor: Motor = get_node("Motor")
 @onready var fl: WheelController = get_node("FL")
 @onready var fr: WheelController = get_node("FR")
 @onready var rl: WheelController = get_node("RL")
 @onready var rr: WheelController = get_node("RR")
 @onready var sound_emitter: SoundEmitter = get_node("SoundEmitter")
 
-var vehicle_state = VehicleState.new()
-var wheel_state = WheelState.new()
+var vehicle_state: VehicleState = VehicleState.new()
+var wheel_state: WheelState = WheelState.new()
 var controlled_by_player: bool = false
 var brake_value: float = 20000
 var on_ground: bool = false
@@ -57,9 +60,10 @@ var rev_normalized: float
 var rev: float
 var apply_boost: bool
 var current_force: float
+var taillights_material: BaseMaterial3D
 
 
-func _ready():
+func _ready() -> void:
 	var weight: float = mass * ProjectSettings.get_setting("physics/3d/default_gravity")
 	wheelbase = rl.transform.origin.z - fl.transform.origin.z
 	driving_force_position = Vector3(0, -rl.wheel_radius, wheelbase * 0.5) # At the rear axis and at the contact point of the wheel.
@@ -70,12 +74,17 @@ func _ready():
 	gearbox.gear_shift_time = shift_time_ms
 	gearbox.set_force_limits(max_force)
 	motor.rev_normalized_max = rev_normalized_max
+	if taillights:
+		taillights_material = taillights.get_active_material(taillights_material_index)
+		if taillights_material:
+			taillights_material.emission_enabled = true
+			taillights_material.emission = Color(1, 0, 0)
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	var torque: float
 	var torque_vector: Vector3
 	var vehicle_velocity_magnitude: float = linear_velocity.length()
-	var vehicle_rotation = Quaternion(transform.basis)
+	var vehicle_rotation: Quaternion = Quaternion(transform.basis)
 	vehicle_state.update(vehicle_rotation, linear_velocity)
 	var steering: float = vehicle_state.drift_angle_measurement
 	apply_boost = false
@@ -85,8 +94,13 @@ func _physics_process(delta: float):
 	rev = rev_normalized * rev_multiplier
 	sound_emitter.update_motor_sound(self)
 	if controlled_by_player:
-		emit_signal("query_driver", self)
-	tail_lights_controller.show_brake_light(false)
+		var _status: Error
+		_status = emit_signal("query_driver", self)
+	if taillights_material:
+		if driver.did_brake:
+			taillights_material.emission_energy_multiplier = taillights_material_energy
+		else:
+			taillights_material.emission_energy_multiplier = 0
 	if !on_ground:
 		has_grip = false
 		grip_force = steering_controller.reset()
@@ -147,12 +161,12 @@ func _physics_process(delta: float):
 	wheel_state.update(delta, vehicle_state.velocity_front_axis, vehicle_state.velocity_rear_axis)
 	update_wheel_rotation(delta, steering)
 
-func is_drift_agle_less_than(angle: float):
+func is_drift_agle_less_than(angle: float) -> bool:
 	if vehicle_state.drift_angle_measurement > -angle && vehicle_state.drift_angle_measurement < angle:
 		return true
 	return false
 
-func control_omega(delta: float, velocity: float, omega_wanted: float, time_factor: float):
+func control_omega(delta: float, velocity: float, omega_wanted: float, time_factor: float) -> void:
 	var value: float = omega_curve.sample(velocity)
 	if driver.did_steer_left:
 		omega_reference = lerp(omega_reference, omega_wanted * value, time_factor * delta)
@@ -161,16 +175,16 @@ func control_omega(delta: float, velocity: float, omega_wanted: float, time_fact
 	else:
 		omega_reference = lerp(omega_reference, 0.0, 9 * delta)
 
-func apply_steering_force(vehicle_rotation: Quaternion):
+func apply_steering_force(vehicle_rotation: Quaternion) -> void:
 	if !vehicle_state.vehicle_moving_forward:
 		grip_force = steering_controller.reset()
 		return
 	grip_force = steering_controller.adjust(0, vehicle_state.velocity_sideways)
-	var direction = vehicle_rotation * Vector3.LEFT
+	var direction: Vector3 = vehicle_rotation * Vector3.LEFT
 	var grip_force_vector: Vector3 = direction * grip_force
 	apply_force(grip_force_vector, offset_drive)
 
-func adjust_cornering(delta: float):
+func adjust_cornering(delta: float) -> void:
 	if driver.did_steer_left:
 		if omega_reference < 0: # countersteer
 			apply_boost = true
@@ -189,7 +203,7 @@ func adjust_cornering(delta: float):
 		else:
 			omega_reference = 0
 
-func apply_drift_force(vehicle_rotation: Quaternion):
+func apply_drift_force(vehicle_rotation: Quaternion) -> void:
 	if !vehicle_state.vehicle_moving_forward:
 		drift_controller.reset()
 		grip_force = 0
@@ -199,13 +213,13 @@ func apply_drift_force(vehicle_rotation: Quaternion):
 	var grip_force_vector: Vector3 = direction * grip_force
 	apply_force(grip_force_vector, offset_drive)
 
-func update_wheel_rotation(delta: float, steering: float):
+func update_wheel_rotation(delta: float, steering: float) -> void:
 	fl.rotate_wheel(delta, wheel_state.total_movement_front, steering)
 	fr.rotate_wheel(delta, wheel_state.total_movement_front, steering)
 	rl.rotate_wheel(delta, wheel_state.total_movement_rear, 0)
 	rr.rotate_wheel(delta, wheel_state.total_movement_rear, 0)
 
-func accelerate():
+func accelerate() -> void:
 	if gearbox.gear_changing:
 		return
 	var vmax: float = gearbox.get_vmax()
@@ -216,14 +230,14 @@ func accelerate():
 	var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 	apply_force(force_vector, offset_drive)
 
-func reverse():
+func reverse() -> void:
 	var velocity_max_reverse: float = 7
 	if velocity_measurement < velocity_max_reverse:
 		acceleration_force = gearbox.force_max_value[1]
 		var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 		apply_force(-force_vector, offset_drive)
 
-func brake(vehicle_velocity_magnitude: float):
+func brake(vehicle_velocity_magnitude: float) -> void:
 	var brake_force: Vector3
 	vehicle_state.brake()
 	omega_reference = 0
@@ -232,7 +246,6 @@ func brake(vehicle_velocity_magnitude: float):
 	else:
 		brake_force = brake_value * linear_velocity
 	apply_force(-brake_force, offset_drive)
-	tail_lights_controller.show_brake_light(true)
 
 func get_turn_radius(vehicle_velocity_magnitude: float) -> float:
 	var radius: float
@@ -271,7 +284,7 @@ class VehicleState:
 	var vehicle_moving_forward: bool
 	var drift_angle_measurement: float
 
-	func update(vehicle_rotation: Quaternion, vehicle_velocity: Vector3):
+	func update(vehicle_rotation: Quaternion, vehicle_velocity: Vector3) -> void:
 		var vehicle_direction_sideways: Vector3 = vehicle_rotation * Vector3.LEFT
 		vehicle_direction = vehicle_rotation * Vector3.FORWARD
 		velocity_front_axis = vehicle_velocity.length()
@@ -292,7 +305,7 @@ class VehicleState:
 		if !vehicle_moving_forward:
 			velocity_front_axis = -velocity_front_axis
 	
-	func brake():
+	func brake() -> void:
 		velocity_front_axis = 0
 		velocity_rear_axis = 0
 
@@ -300,6 +313,6 @@ class WheelState:
 	var total_movement_front: float
 	var total_movement_rear: float
 
-	func update(delta: float, velocity_front_axis: float, velocity_rear_axis: float):
+	func update(delta: float, velocity_front_axis: float, velocity_rear_axis: float) -> void:
 		total_movement_front += delta * velocity_front_axis
 		total_movement_rear += delta * velocity_rear_axis

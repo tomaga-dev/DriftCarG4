@@ -9,7 +9,7 @@ var did_declutch: bool
 var did_brake: bool
 var did_reverse: bool
 
-func start_query():
+func start_query() -> void:
 	did_steer_left = false
 	did_steer_right = false
 	did_accelerate = false
@@ -17,20 +17,20 @@ func start_query():
 	did_reverse = false
 	did_brake = false
 
-func turn_left():
+func turn_left() -> void:
 	did_steer_left = true
 
-func turn_right():
+func turn_right() -> void:
 	did_steer_right = true
 
-func accelerate():
+func accelerate() -> void:
 	did_accelerate = true
 
-func declutch():
+func declutch() -> void:
 	did_declutch = true
 
-func brake():
+func brake() -> void:
 	did_brake = true
 
-func reverse():
+func reverse() -> void:
 	did_reverse = true

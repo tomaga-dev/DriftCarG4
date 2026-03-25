@@ -26,12 +26,12 @@ var camber_rotation: Quaternion
 var steering_rotation: Quaternion
 var wanted_steering_rotation: Quaternion
 
-func _ready():
+func _ready() -> void:
 	circumference = 2 * PI * wheel_radius
 	camber_rotation = Quaternion(wheel.transform.basis)
 	steering_rotation = Quaternion(wheel.transform.basis)
 	
-func init_suspension(rest_force: float, arg_spring_distance_max_in: float, arg_spring_distance_max_out: float, arg_spring_constant: float, arg_spring_damping: float):
+func init_suspension(rest_force: float, arg_spring_distance_max_in: float, arg_spring_distance_max_out: float, arg_spring_constant: float, arg_spring_damping: float) -> void:
 	spring_distance_max_in = arg_spring_distance_max_in
 	spring_distance_max_out = arg_spring_distance_max_out
 	spring_constant = arg_spring_constant
@@ -65,9 +65,9 @@ func add_spring_force(delta: float, vehicle_body: RigidBody3D, anti_roll_force: 
 	wheel.transform.origin = wheel_position
 	return has_contact
 
-func rotate_wheel(delta: float, distance_moved: float, steering_angle: float):
+func rotate_wheel(delta: float, distance_moved: float, steering_angle: float) -> void:
 	var steering_max: float = deg_to_rad(45)
-	var rotation_angle = 2 * PI * distance_moved / circumference
+	var rotation_angle: float = 2 * PI * distance_moved / circumference
 	var movement_rotation: Quaternion = Quaternion(Vector3.LEFT, rotation_angle)
 	if steering_angle > steering_max:
 		wanted_steering_rotation = Quaternion(Vector3.UP, steering_max)
@@ -81,5 +81,5 @@ func rotate_wheel(delta: float, distance_moved: float, steering_angle: float):
 		wanted_steering_rotation = Quaternion(Vector3.UP, steering_angle)
 		steering_rotation = steering_rotation.slerp(wanted_steering_rotation, 6 * delta)
 		steering_rotation = steering_rotation.normalized()
-	var wheel_rotation = steering_rotation * camber_rotation * movement_rotation
+	var wheel_rotation: Quaternion = steering_rotation * camber_rotation * movement_rotation
 	wheel.transform.basis = Basis(wheel_rotation)

@@ -11,7 +11,7 @@ var time_now: int
 var time_diff: int = 52 # milliseconds
 var speed_now: float = 0
 var speed_delta: float = 0.5
-var rev_normalized_max = 1
+var rev_normalized_max: float = 1
 
 func update_state(car: VehicleController) -> float:
 	var cut_off: bool
@@ -31,8 +31,8 @@ func update_state(car: VehicleController) -> float:
 		rev_normalized = get_rev_from_speed(car, v_cut_off, cut_off)
 	return rev_normalized * rev_normalized_max
 
-func set_speed_now(car: VehicleController, v_cut_off: float, cut_off: bool, has_grip: bool):
-	var speed = car.linear_velocity.length()
+func set_speed_now(car: VehicleController, v_cut_off: float, cut_off: bool, has_grip: bool) -> void:
+	var speed: float = car.linear_velocity.length()
 	if car.driver.did_accelerate:
 		var drift_angle: float = rad_to_deg(car.vehicle_state.drift_angle_measurement)
 		var is_drifting: bool = drift_angle < -drift_angle_max || drift_angle > drift_angle_max
@@ -61,7 +61,7 @@ func get_rev_from_speed(car: VehicleController, v_cut_off: float, cut_off: bool)
 	set_volume(car, speed_now, v_cut_off)
 	return rev_normalized
 
-func set_volume(car: VehicleController, speed: float, v_cut_off: float):
+func set_volume(car: VehicleController, speed: float, v_cut_off: float) -> void:
 	if car.gearbox.gear_changing:
 		on = -40
 		off = -20
