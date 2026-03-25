@@ -9,11 +9,13 @@ var player: Node
 var car: VehicleController
 
 
-func _ready():
+func _ready() -> void:
+	var view: Viewport = get_viewport()
+	view.grab_focus()
 	player = get_node(player_node)
 	car = player.car
 
-func _process(_delta):
+func _process(_delta: float) -> void:
 	if Input.is_action_just_released("ui_cancel"):
 		get_tree().quit()
 	if Input.is_action_just_pressed("controller_camera"):
@@ -29,15 +31,15 @@ func _process(_delta):
 		else:
 			camera.auto_rotate_mode = true
 	var status_text: String
-	var fps = Performance.get_monitor(Performance.TIME_FPS)
+	var fps: float = Performance.get_monitor(Performance.TIME_FPS)
 	var velocity_sideways: float = car.vehicle_state.velocity_sideways
 	var grip: bool = car.has_grip
 	var grip_force: float = car.grip_force
-	var omega_reference = car.omega_reference
-	var omega_measurement = car.angular_velocity.y
-	var drift_angle = car.vehicle_state.drift_angle_measurement
-	var cornering = car.is_cornering
-	var format = "FPS: %2.0f"
+	var omega_reference: float = car.omega_reference
+	var omega_measurement: float = car.angular_velocity.y
+	var drift_angle: float = car.vehicle_state.drift_angle_measurement
+	var cornering: bool = car.is_cornering
+	var format: String = "FPS: %2.0f"
 	fps_label.text = format % fps
 	format = "Turn Radius: %.0f\n"
 	format += "Force: %.1f\n"

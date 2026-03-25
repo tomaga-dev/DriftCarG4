@@ -5,11 +5,11 @@ extends Node
 var car: VehicleController
 
 
-func _ready():
+func _ready() -> void:
 	car = get_node(car_node)
 	car.controlled_by_player = true
 
-func get_player_input(driver):
+func get_player_input(driver: Driver) -> void:
 	if Input.is_action_pressed("controller_brake"):
 		driver.brake()
 	if Input.is_action_pressed("controller_accelerate"):
@@ -23,11 +23,12 @@ func get_player_input(driver):
 	if Input.is_action_pressed("controller_declutch"):
 		driver.declutch()
 
-func query_driver(vehicle: VehicleController):
+func query_driver(vehicle: VehicleController) -> void:
 	if vehicle != car:
 		return
-	vehicle.driver.start_query()
-	get_player_input(vehicle.driver)
+	var driver: Driver = vehicle.driver
+	driver.start_query()
+	get_player_input(driver)
 
 func _on_monteri_query_driver(vehicle: VehicleController) -> void:
 	query_driver(vehicle)

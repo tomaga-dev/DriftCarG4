@@ -11,22 +11,22 @@ var vmin: Array = [0, 0, 14.0, 25.0, 39.0, 50.0]
 var vmax: Array = [0, 25.0, 39.0, 50.0, 58.0, 77.0]
 var force_max_value: Array = [1.0, 0.8, 0.65, 0.55, 0.5, 0.5]
 
-func _init():
+func _init() -> void:
 	gear_max = vmax.size() - 1
 	gear = 1
 	gear_changing = false
 	gear_shift_start_time = 0
 
-func set_force_limits(max_force: float):
+func set_force_limits(max_force: float) -> void:
 	var i: int = 0
-	for value in force_max_value:
+	for value: float in force_max_value:
 		force_max_value[i] = max_force * value
 		i += 1 
 	
 func get_vmax() -> float:
 	return vmax[gear]
 
-func select_gear(speed: float, accelerating: bool):
+func select_gear(speed: float, accelerating: bool) -> void:
 	if Time.get_ticks_msec() < gear_shift_start_time + gear_shift_time:
 		return
 	gear_changing = false
@@ -38,7 +38,7 @@ func select_gear(speed: float, accelerating: bool):
 				gear_changing = true
 				gear_shift_start_time = Time.get_ticks_msec()
 		if speed < vmin[gear]:
-			for index in range(vmin.size()):
+			for index: int in range(vmin.size()):
 				if vmin[index] < speed:
 					gear = index
 					gear_changing = true
