@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://imie6qxjhqto"]
 
-[ext_resource type="Script" path="res://Scenes/VehicleController/Driver/driver.gd" id="1_7uace"]
+[ext_resource type="Script" uid="uid://kd2fcindutmy" path="res://Scenes/VehicleController/Driver/driver.gd" id="1_7uace"]
 
 [node name="Driver" type="Node"]
 script = ExtResource("1_7uace")

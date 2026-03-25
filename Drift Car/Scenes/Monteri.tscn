@@ -5,7 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://bnt53wbk40q2j" path="res://Scenes/CarModels/Wheels/wheel_left.tscn" id="3_f1qrj"]
 [ext_resource type="PackedScene" uid="uid://b1gsog1epnj0u" path="res://Scenes/CarModels/Wheels/wheel_right.tscn" id="4_dl1vd"]
 
-[node name="Monteri" instance=ExtResource("1_vwf80")]
+[node name="Monteri" node_paths=PackedStringArray("taillights") instance=ExtResource("1_vwf80")]
+taillights = NodePath("VehicleBody/Monteri-Body/Monteri-Body2")
+taillights_material_index = 3
 
 [node name="Monteri-Body" parent="VehicleBody" index="0" instance=ExtResource("2_5wpep")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
@@ -17,3 +19,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
 [node name="Wheel" parent="RL/Wheel" index="0" instance=ExtResource("3_f1qrj")]
 
 [node name="Wheel" parent="RR/Wheel" index="0" instance=ExtResource("4_dl1vd")]
+
+[editable path="VehicleBody/Monteri-Body"]

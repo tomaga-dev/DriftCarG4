@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c2qowk16peowo"]
 
-[ext_resource type="Script" path="res://Scenes/VehicleController/PIDController/PIDController.gd" id="1_dhbd8"]
+[ext_resource type="Script" uid="uid://bgcvdrgmlw2ue" path="res://Scenes/VehicleController/PIDController/PIDController.gd" id="1_dhbd8"]
 
 [node name="PIDController" type="Node"]
-script = ExtResource( "1_dhbd8" )
+script = ExtResource("1_dhbd8")

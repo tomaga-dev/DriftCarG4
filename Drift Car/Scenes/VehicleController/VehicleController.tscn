@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://c1wd0g2qau02q"]
+[gd_scene load_steps=10 format=3 uid="uid://c1wd0g2qau02q"]
 
 [ext_resource type="PackedScene" uid="uid://drl1kk35eoxf5" path="res://Scenes/VehicleController/WheelController/WheelController.tscn" id="1_cr034"]
-[ext_resource type="Script" path="res://Scenes/VehicleController/VehicleController.gd" id="1_jl35m"]
+[ext_resource type="Script" uid="uid://dhnsixhfv56eu" path="res://Scenes/VehicleController/VehicleController.gd" id="1_jl35m"]
 [ext_resource type="PackedScene" uid="uid://c2qowk16peowo" path="res://Scenes/VehicleController/PIDController/PIDController.tscn" id="2_o5eeo"]
 [ext_resource type="Curve" uid="uid://cevokj6x7sdq5" path="res://Scenes/VehicleController/ForceCurve.tres" id="2_pribm"]
 [ext_resource type="Curve" uid="uid://v2jpbw78hfm" path="res://Scenes/VehicleController/OmegaCurve.tres" id="3_k8rck"]
-[ext_resource type="Script" path="res://Scenes/VehicleController/TailLightsController.gd" id="4_e5kp6"]
 [ext_resource type="PackedScene" uid="uid://c1ollsa6y5rss" path="res://Scenes/VehicleController/GearBox/gear_box.tscn" id="6_nsme3"]
 [ext_resource type="PackedScene" uid="uid://imie6qxjhqto" path="res://Scenes/VehicleController/Driver/driver.tscn" id="7_lkqjy"]
 [ext_resource type="PackedScene" uid="uid://langvf0xk2na" path="res://Scenes/VehicleController/Motor/motor.tscn" id="8_bkw6d"]
@@ -23,9 +22,6 @@ omega_curve = ExtResource("3_k8rck")
 shape = SubResource("BoxShape3D_2espx")
 
 [node name="VehicleBody" type="Node3D" parent="."]
-
-[node name="TailLightsController" type="Node3D" parent="."]
-script = ExtResource("4_e5kp6")
 
 [node name="FL" parent="." instance=ExtResource("1_cr034")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0, -1.3)

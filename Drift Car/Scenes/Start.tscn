@@ -1,8 +1,8 @@
-[gd_scene load_steps=26 format=3 uid="uid://bmddi06hputur"]
+[gd_scene format=3 uid="uid://bmddi06hputur"]
 
-[ext_resource type="Script" path="res://Scenes/Start.gd" id="1_gi87r"]
-[ext_resource type="Script" path="res://Scenes/Player.gd" id="2_g27tf"]
-[ext_resource type="Script" path="res://Scenes/Camera.gd" id="3_wjqso"]
+[ext_resource type="Script" uid="uid://dtkywkdm08dvi" path="res://Scenes/Start.gd" id="1_gi87r"]
+[ext_resource type="Script" uid="uid://mcdl31sw8ri3" path="res://Scenes/Player.gd" id="2_g27tf"]
+[ext_resource type="Script" uid="uid://crusougvxfjj" path="res://Scenes/Camera.gd" id="3_wjqso"]
 [ext_resource type="PackedScene" uid="uid://jv4wm4mlhwqf" path="res://Scenes/dashboard.tscn" id="4_a1ewv"]
 [ext_resource type="Texture2D" uid="uid://df3yv0munac4v" path="res://Scenes/RevCounterNeedle.png" id="5_jjaii"]
 [ext_resource type="PackedScene" uid="uid://b4p4hvb8ja73m" path="res://Scenes/Monteri.tscn" id="5_x1q82"]
@@ -33,7 +33,6 @@ sky = SubResource("Sky_wbhdn")
 ambient_light_color = Color(0.501961, 0.501961, 0.501961, 1)
 ambient_light_sky_contribution = 0.1
 ambient_light_energy = 0.2
-tonemap_mode = 3
 fog_light_color = Color(0, 0.619608, 1, 1)
 fog_sky_affect = 0.0
 volumetric_fog_density = 0.02
@@ -65,19 +64,19 @@ size = Vector3(2, 0.3, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_jikxc"]
 size = Vector3(1, 0.3, 1)
 
-[node name="Start" type="Node"]
+[node name="Start" type="Node" unique_id=597549464]
 script = ExtResource("1_gi87r")
 player_node = NodePath("Player")
 
-[node name="Player" type="Node" parent="."]
+[node name="Player" type="Node" parent="." unique_id=303455694]
 script = ExtResource("2_g27tf")
 car_node = NodePath("../Monteri")
 
-[node name="Status" parent="." instance=ExtResource("6_limtv")]
+[node name="Status" parent="." unique_id=1815642109 instance=ExtResource("6_limtv")]
 
-[node name="Dashboard" parent="." instance=ExtResource("4_a1ewv")]
+[node name="Dashboard" parent="." unique_id=1918069665 instance=ExtResource("4_a1ewv")]
 
-[node name="Needle" type="TextureRect" parent="Dashboard"]
+[node name="Needle" type="TextureRect" parent="Dashboard" unique_id=1644355522]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -91,7 +90,7 @@ grow_vertical = 0
 pivot_offset = Vector2(128, 128)
 texture = ExtResource("5_jjaii")
 
-[node name="Gear" type="Label" parent="Dashboard"]
+[node name="Gear" type="Label" parent="Dashboard" unique_id=785145928]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -108,7 +107,7 @@ theme_override_fonts/font = ExtResource("6_yb40h")
 theme_override_font_sizes/font_size = 82
 text = "0"
 
-[node name="Speed" type="Label" parent="Dashboard"]
+[node name="Speed" type="Label" parent="Dashboard" unique_id=690732299]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -123,86 +122,86 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "999"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1768525846]
 transform = Transform3D(-0.986286, 0.10609, -0.126433, 0, 0.766045, 0.642788, 0.165047, 0.633972, -0.755538, -20.3359, 103.738, -121.523)
 light_energy = 0.7
 light_volumetric_fog_energy = 3.0
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1883250010]
 environment = SubResource("Environment_e3rv3")
 
-[node name="Camera" type="Camera3D" parent="."]
+[node name="Camera" type="Camera3D" parent="." unique_id=919114679]
 fov = 40.0
 script = ExtResource("3_wjqso")
+auto_rotate_mode = false
 damping = 3.0
 vehicle_node = NodePath("../Monteri")
 needle_node = NodePath("../Dashboard/Needle")
 gear_node = NodePath("../Dashboard/Gear")
 speed_node = NodePath("../Dashboard/Speed")
 
-[node name="GroundLimits" type="StaticBody3D" parent="."]
+[node name="GroundLimits" type="StaticBody3D" parent="." unique_id=177612887]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundLimits"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundLimits" unique_id=1779236172]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 505)
 shape = SubResource("BoxShape3D_y5xuo")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="GroundLimits"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="GroundLimits" unique_id=871744443]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -505)
 shape = SubResource("BoxShape3D_4xdyb")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="GroundLimits"]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="GroundLimits" unique_id=1581201226]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 505, 0, 0)
 shape = SubResource("BoxShape3D_q02r8")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="GroundLimits"]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="GroundLimits" unique_id=1300148962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -505, 0, 0)
 shape = SubResource("BoxShape3D_37nhg")
 
-[node name="Ground" parent="." instance=ExtResource("6_w8p8v")]
+[node name="Ground" parent="." unique_id=1145082825 instance=ExtResource("6_w8p8v")]
 
-[node name="Barrier" parent="." instance=ExtResource("9_oseuy")]
+[node name="Barrier" parent="." unique_id=1561355388 instance=ExtResource("9_oseuy")]
 
-[node name="Monteri" parent="." instance=ExtResource("5_x1q82")]
-transform = Transform3D(-0.0446655, 0, -0.999002, 0, 1, 0, 0.999002, 0, -0.0446655, 0, 0.103202, 47.6751)
-rev_normalized_max = 0.7
+[node name="Monteri" parent="." unique_id=1048940935 instance=ExtResource("5_x1q82")]
+transform = Transform3D(-0.0446655, 0, -0.999002, 0, 1, 0, 0.999002, 0, -0.0446655, 0, 0.192333, 47.6751)
 
-[node name="CameraTarget" type="Node3D" parent="Monteri"]
+[node name="CameraTarget" type="Node3D" parent="Monteri" unique_id=1767160009]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
 
-[node name="CameraOrigin" type="Node3D" parent="Monteri"]
+[node name="CameraOrigin" type="Node3D" parent="Monteri" unique_id=1962427305]
 transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 0.87, 8)
 
-[node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri"]
+[node name="CollisionShapeFront" type="CollisionShape3D" parent="Monteri" unique_id=1492389098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 shape = SubResource("BoxShape3D_x1cas")
 
-[node name="CollisionShapeRear" type="CollisionShape3D" parent="Monteri"]
+[node name="CollisionShapeRear" type="CollisionShape3D" parent="Monteri" unique_id=1312084612]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
 shape = SubResource("BoxShape3D_ur7gn")
 
-[node name="CollisionShapeBody" type="CollisionShape3D" parent="Monteri"]
+[node name="CollisionShapeBody" type="CollisionShape3D" parent="Monteri" unique_id=683820841]
 shape = SubResource("BoxShape3D_5lcbe")
 
-[node name="CollisionShapeTop" type="CollisionShape3D" parent="Monteri"]
+[node name="CollisionShapeTop" type="CollisionShape3D" parent="Monteri" unique_id=754940387]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0.56)
 shape = SubResource("BoxShape3D_jikxc")
 
-[node name="SoundEmitter" parent="Monteri" instance=ExtResource("7_8r1bc")]
+[node name="SoundEmitter" parent="Monteri" unique_id=1455313404 instance=ExtResource("7_8r1bc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0171307, 2.20283)
 
-[node name="Acceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter"]
+[node name="Acceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter" unique_id=208883607]
 stream = ExtResource("8_5x8ta")
 bus = &"On"
 
-[node name="Deceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter"]
+[node name="Deceleration" type="AudioStreamPlayer3D" parent="Monteri/SoundEmitter" unique_id=175398652]
 stream = ExtResource("9_dqhyg")
 bus = &"Off"
 
-[node name="ArcBridge" parent="." instance=ExtResource("10_3acnn")]
+[node name="ArcBridge" parent="." unique_id=450307311 instance=ExtResource("10_3acnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -64)
 
-[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
+[node name="ReflectionProbe" type="ReflectionProbe" parent="." unique_id=1196496506]
 size = Vector3(500, 100, 500)
 ambient_mode = 0
 

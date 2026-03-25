@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c1ollsa6y5rss"]
 
-[ext_resource type="Script" path="res://Scenes/VehicleController/GearBox/gear_box.gd" id="1_eqhya"]
+[ext_resource type="Script" uid="uid://bb6myk66o6oo5" path="res://Scenes/VehicleController/GearBox/gear_box.gd" id="1_eqhya"]
 
 [node name="GearBox" type="Node"]
 script = ExtResource("1_eqhya")
