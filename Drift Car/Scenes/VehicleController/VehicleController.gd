@@ -44,6 +44,7 @@ var controlled_by_player: bool = false
 var brake_value: float = 20000
 var on_ground: bool = false
 var has_grip: bool = false
+var steering_angle: float
 var grip_force: float
 var driving_force_position: Vector3 # The force to move the car is applied at this position (local to the car).
 var offset_drive: Vector3
@@ -81,6 +82,7 @@ func _ready() -> void:
 			taillights_material.emission = Color(1, 0, 0)
 
 func _physics_process(delta: float) -> void:
+	var forward: float = 1
 	var torque: float
 	var torque_vector: Vector3
 	var vehicle_velocity_magnitude: float = linear_velocity.length()
@@ -114,6 +116,10 @@ func _physics_process(delta: float) -> void:
 	velocity_measurement = vehicle_velocity_magnitude
 	gearbox.select_gear(vehicle_velocity_magnitude, driver.did_accelerate)
 	turn_radius = get_turn_radius(vehicle_velocity_magnitude)
+	steering_angle = asin(wheelbase / turn_radius)
+	if !vehicle_state.vehicle_moving_forward:
+		forward = -1
+		steering_angle = -steering_angle
 	if driver.did_accelerate:
 		if driver.did_steer_left || driver.did_steer_right:
 			if is_cornering:
@@ -131,8 +137,8 @@ func _physics_process(delta: float) -> void:
 				has_grip = true
 	if has_grip:
 		drift_controller.reset()
-		steering = asin(wheelbase / turn_radius)
-		control_omega(delta, vehicle_velocity_magnitude, omega_max, 2)
+		steering = steering_angle
+		control_omega(delta, vehicle_velocity_magnitude, forward * omega_max, 2)
 		apply_steering_force(vehicle_rotation)
 	else:
 		steering_controller.reset()
@@ -142,8 +148,8 @@ func _physics_process(delta: float) -> void:
 		else:
 			drift_controller.reset()
 			grip_force = 0
-			steering = asin(wheelbase / turn_radius)
-			control_omega(delta, vehicle_velocity_magnitude, omega_max_drift, 5)
+			steering = steering_angle
+			control_omega(delta, vehicle_velocity_magnitude, forward * omega_max_drift, 5)
 			apply_steering_force(vehicle_rotation)
 	if driver.did_accelerate:
 		accelerate()
