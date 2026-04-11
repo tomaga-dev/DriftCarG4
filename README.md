@@ -22,7 +22,7 @@ To change settings, click on Monteri in the scene tab. You can set the max force
 If you have more than one car in your scene you can set the players car here.
 
 ### Godot version
-This project was tested with Godot 4.0.
+This project was tested with Godot 4.6.
 
 ### Credits
 The [font](https://fonts.google.com/) used in this project courtesy of Google.
