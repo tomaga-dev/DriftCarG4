@@ -73,7 +73,6 @@ func _ready() -> void:
 	rl.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
 	rr.init_suspension(weight / 4, spring_distance_max_in, spring_distance_max_out, spring_constant, spring_damping)
 	gearbox.gear_shift_time = shift_time_ms
-	gearbox.set_force_limits(max_force)
 	motor.rev_normalized_max = rev_normalized_max
 	if taillights:
 		taillights_material = taillights.get_active_material(taillights_material_index)
@@ -229,7 +228,7 @@ func accelerate() -> void:
 	if gearbox.gear_changing:
 		return
 	var vmax: float = gearbox.get_vmax()
-	acceleration_force = gearbox.force_max_value[gearbox.gear - 1] * force_curve.sample(velocity_measurement / vmax)
+	acceleration_force = max_force * gearbox.force_max_value[gearbox.gear - 1] * force_curve.sample(velocity_measurement / vmax)
 	if apply_boost:
 		acceleration_force *= boost_factor
 	current_force = acceleration_force
@@ -239,7 +238,7 @@ func accelerate() -> void:
 func reverse() -> void:
 	var velocity_max_reverse: float = 7
 	if velocity_measurement < velocity_max_reverse:
-		acceleration_force = gearbox.force_max_value[1]
+		acceleration_force = max_force * gearbox.force_max_value[1]
 		var force_vector: Vector3 = vehicle_state.vehicle_direction * acceleration_force
 		apply_force(-force_vector, offset_drive)
 
