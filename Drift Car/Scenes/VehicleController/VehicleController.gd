@@ -7,7 +7,7 @@ signal query_driver(vehicle: VehicleController)
 @export var max_force: float = 20000
 @export var boost_factor: float = 1.7
 @export var rev_min: float = 1
-@export var rev_multiplier: float = 5 # Higher values result in higher revs.
+@export var rev_multiplier: float = 1.0 # Higher values result in higher revs.
 @export var rev_normalized_max: float = 1
 @export var shift_time_ms: int = 333 # in milliseconds
 @export var vmax_wheel_spin: float = 6

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://langvf0xk2na"]
+[gd_scene format=3 uid="uid://langvf0xk2na"]
 
 [ext_resource type="Script" uid="uid://b7jvw7ftgar2l" path="res://Scenes/VehicleController/Motor/Motor.gd" id="1_be8r4"]
 
-[node name="Motor" type="Node"]
+[node name="Motor" type="Node" unique_id=1375188232]
 script = ExtResource("1_be8r4")

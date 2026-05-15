@@ -62,18 +62,14 @@ func get_rev_from_speed(car: VehicleController, v_cut_off: float, cut_off: bool)
 	return rev_normalized
 
 func set_volume(car: VehicleController, speed: float, v_cut_off: float) -> void:
+	on = -40
+	off = -20
 	if car.gearbox.gear_changing:
 		on = -40
-		off = -20
 	else: if !car.on_ground:
 		on = -40
-		off = -20
 	else: if car.driver.did_accelerate:
 		if speed > v_cut_off:
 			on = -40
 		else:
 			on = -3
-		off = -40
-	else:
-		on = -40
-		off = -20
