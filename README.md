@@ -1,6 +1,5 @@
 # DriftCarG4
-This is a port of the [drift car project](https://notabug.org/tomaga/DriftCarProject) to Godot 4. In the meantime I've been working on the [custom suspension project]
-(https://github.com/tomaga-dev/CustomVehicleSuspension) you might find interesting as well. There you will find a PDF explaining the physics of the suspension and other things not available here.
+This is a port of the [drift car project](https://notabug.org/tomaga/DriftCarProject) to Godot 4. In the meantime I've been working on the [custom suspension project](https://github.com/tomaga-dev/CustomVehicleSuspension) you might find interesting as well. There you will find a PDF explaining the physics of the suspension and other things not available here.
 
 ### Preview
 ![Screenshot](Screenshot.jpg)
